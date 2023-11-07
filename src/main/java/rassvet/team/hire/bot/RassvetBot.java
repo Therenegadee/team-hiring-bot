@@ -12,9 +12,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import rassvet.team.hire.bot.handler.UpdateHandler;
 
-@Getter
 @Component
+@RequiredArgsConstructor
 @PropertySource("classpath:application.yml")
+@Getter
 public class RassvetBot extends TelegramLongPollingBot {
     @Value("${telegram.username}")
     private String botUsername;
@@ -22,25 +23,12 @@ public class RassvetBot extends TelegramLongPollingBot {
     private String botToken;
     private final UpdateHandler updateHandler;
 
-    public RassvetBot(
-            TelegramBotsApi telegramBotsApi,
-            String botUsername,
-            String botToken,
-            UpdateHandler updateHandler
-    ) throws TelegramApiException {
-        this.botUsername = botUsername;
-        this.botToken = botToken;
-        this.updateHandler = updateHandler;
-        telegramBotsApi.registerBot(this);
-    }
-
     @Override
     public void onUpdateReceived(Update update) {
-        SendMessage responseMsg = updateHandler.handleUpdate(update);
-        sendResponse(responseMsg);
+        updateHandler.handleUpdate(update);
     }
 
-    private void sendResponse(SendMessage responseMsg) {
+    public void sendResponse(SendMessage responseMsg) {
         try {
             execute(responseMsg);
         } catch (TelegramApiException e) {

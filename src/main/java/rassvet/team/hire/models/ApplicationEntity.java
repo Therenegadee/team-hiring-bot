@@ -1,11 +1,18 @@
 package rassvet.team.hire.models;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import rassvet.team.hire.models.enums.ContactMethod;
 import rassvet.team.hire.models.enums.Position;
 
 @Document("applications")
+@Getter
+@Setter
+@NoArgsConstructor
 public class ApplicationEntity {
     @Id
     private String id;
