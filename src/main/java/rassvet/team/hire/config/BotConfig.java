@@ -1,4 +1,4 @@
-package rassvet.team.hire;
+package rassvet.team.hire.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

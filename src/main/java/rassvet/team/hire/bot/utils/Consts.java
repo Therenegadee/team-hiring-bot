@@ -37,20 +37,25 @@ public class Consts {
 
     public static final String CANT_UNDERSTAND = "Извините, но я пока что понимаю только команды :(\n" +
             "Чтобы узнать список доступных комманд введите /help";
-    public static final String INCORRECT_INPUT_FOR_KEYBOARDS = "Вы ввели недопустимое значение! Введите его заново!";
+    public static final String INCORRECT_INPUT_FOR_KEYBOARDS = "Вы ввели недопустимое значение! Выберите один из предложенных ответов!";
     public static final String INCORRECT_NAME_INPUT = "Вы ввели некорректное имя (оно не может содержать цифры, а также любые символы, кроме дефисов).\n" +
             "Введите имя снова.";
     public static final String INCORRECT_AGE_INPUT = "Вы ввели недопустимое значение для возраста!\n" +
             "Введите ваш возраст снова в числовом формате (например, 25).";
-    // MESSAGE FOR APPLY COMMAND
-    public static final String CHOOSE_DESIRED_POSITION = "Выберите позицию, на которую вы хотите подать заявку";
-    public static final String INPUT_AGE = "Введите свой возраст числом (например, 25)";
-    public static final String INPUT_NAME = "Введите своё имя";
-    public static final String INPUT_PHONE_NUMBER = "Введите свой номер телефона";
     public static final String INCORRECT_PHONE_NUMBER_INPUT = "Вы ввели некорректный номер телефона!\n" +
             "Коректные форматы ввода:\n" +
             "1. 7xxxXXXxxXX\n" +
             "2. 8xxxXXXxxXX\n" +
             "3. +7xxxXXXxxXX\n" +
             "4. +7(XXX)-XXX-XX-XX";
+
+    // MESSAGE FOR APPLY COMMAND
+    public static final String CHOOSE_DESIRED_POSITION = "Выберите позицию, на которую вы хотите подать заявку";
+    public static final String INPUT_AGE = "Введите свой возраст числом (например, 25)";
+    public static final String INPUT_NAME = "Введите своё имя и фамилию";
+    public static final String INPUT_PHONE_NUMBER = "Введите свой номер телефона";
+    public static final String INPUT_EXPERIENCE = "Напишите о своем опыте работы.\n" +
+            "Отправьте данный рассказ одним сообщением в ответ на это.\n" +
+            "Расскажите о своем опыте как можно подробнее (как давно ведете, какие направления вели, и т.п.)\n" +
+            "Если есть спортивные звания или разряды, обязательно их укажи!";
 }
