@@ -7,14 +7,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.RassvetBot;
 import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.cache.BotState;
-import rassvet.team.hire.bot.keyboards.KeyboardFactory;
+import rassvet.team.hire.bot.utils.KeyboardFactory;
 import rassvet.team.hire.bot.utils.PhoneNumberFormatter;
 import rassvet.team.hire.bot.utils.Validator;
-import rassvet.team.hire.models.ApplicationEntity;
+import rassvet.team.hire.dao.interfaces.QuestionnaireDao;
+import rassvet.team.hire.models.Application;
+import rassvet.team.hire.models.Questionnaire;
 import rassvet.team.hire.models.enums.ContactMethod;
-import rassvet.team.hire.models.enums.Position;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.lang.Enum.valueOf;
 import static rassvet.team.hire.bot.cache.BotState.*;
@@ -25,6 +27,7 @@ import static rassvet.team.hire.bot.utils.Consts.*;
 public class ApplyCommand implements Command {
     private final BotCache botCache;
     private final RassvetBot rassvetBot;
+    private final QuestionnaireDao questionnaireDao;
 
     @Override
     public void handleCommand(Update update, BotState botState) {
@@ -35,10 +38,6 @@ public class ApplyCommand implements Command {
             case INPUT_PHONE_NUMBER_STATE -> inputPhoneNumber(update);
             case CHOOSE_CONTACT_METHOD_STATE -> inputContactMethod(update);
             case INPUT_EXPERIENCE_STATE -> inputExperience(update);
-            case INPUT_EDUCATION_STATE -> inputEducation(update);
-            case INPUT_DIRECTIONS_IN_PREFER_STATE -> inputDirectionsInPrefer(update);
-            case INPUT_HOURS_PER_WEEK_IN_PREFER_STATE -> inputHoursPerWeekInPrefer(update);
-            case INPUT_POSSIBLE_WORKING_DAYS_AND_HOURS_STATE -> inputDaysAndHoursInPrefer(update);
         }
     }
 
@@ -51,10 +50,6 @@ public class ApplyCommand implements Command {
             case INPUT_PHONE_NUMBER_STATE -> savePhoneNumber(update);
             case CHOOSE_CONTACT_METHOD_STATE -> saveContactMethod(update);
             case INPUT_EXPERIENCE_STATE -> saveExperience(update);
-            case INPUT_EDUCATION_STATE -> saveEducation(update);
-            case INPUT_DIRECTIONS_IN_PREFER_STATE -> saveDirectionsInPrefer(update);
-            case INPUT_HOURS_PER_WEEK_IN_PREFER_STATE -> saveHoursPerWeekInPrefer(update);
-            case INPUT_POSSIBLE_WORKING_DAYS_AND_HOURS_STATE -> saveDaysAndHoursInPrefer(update);
         }
     }
 
@@ -74,20 +69,21 @@ public class ApplyCommand implements Command {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
         String userResponse = update.getMessage().getText();
-        Position position = valueOf(Position.class, userResponse);
-        if (Objects.isNull(position)) {
+        Application application = new Application();
+        Optional<Questionnaire> questionnaireOpt = questionnaireDao.findByPosition(userResponse);
+        if (questionnaireOpt.isEmpty()) {
             rassvetBot.sendResponse(SendMessage.builder()
-                    .chatId(chatId)
                     .text(INCORRECT_INPUT_FOR_KEYBOARDS)
+                    .chatId(chatId)
                     .replyMarkup(KeyboardFactory.positionKeyboard())
                     .build());
         }
-        ApplicationEntity application = new ApplicationEntity();
-        application.setPosition(position);
+        Questionnaire questionnaire = questionnaireOpt.get();
+        application.setQuestionnaire(questionnaire);
         botCache.setApplicationEntity(telegramId, application);
         botCache.setBotState(telegramId, INPUT_NAME_STATE);
         rassvetBot.sendResponse(SendMessage.builder()
-                .text("Вы претендуете на позицию тренера!")
+                .text("Вы претендуете на позицию: " + questionnaire.getPosition())
                 .chatId(chatId)
                 .build());
         inputName(update);
@@ -112,8 +108,8 @@ public class ApplyCommand implements Command {
                     .build());
             return;
         }
-        ApplicationEntity application = botCache.getApplicationEntity(telegramId);
-        if (application.getName().isEmpty()) {
+        Application application = botCache.getApplicationEntity(telegramId);
+        if (application.getFullName().isEmpty()) {
             botCache.setBotState(telegramId, INPUT_AGE_STATE);
             rassvetBot.sendResponse(SendMessage.builder()
                     .text(userResponse + ", приятно познакомиться!")
@@ -127,7 +123,7 @@ public class ApplyCommand implements Command {
                     .chatId(chatId)
                     .build());
         }
-        application.setName(userResponse);
+        application.setFullName(userResponse);
         botCache.setApplicationEntity(telegramId, application);
     }
 
@@ -151,7 +147,7 @@ public class ApplyCommand implements Command {
             return;
         }
         int age = Integer.parseInt(userResponse);
-        ApplicationEntity application = botCache.getApplicationEntity(telegramId);
+        Application application = botCache.getApplicationEntity(telegramId);
         if (Objects.isNull(application.getAge())) {
             botCache.setBotState(telegramId, INPUT_PHONE_NUMBER_STATE);
             rassvetBot.sendResponse(SendMessage.builder()
@@ -194,7 +190,7 @@ public class ApplyCommand implements Command {
             return;
         }
         String phoneNumber = PhoneNumberFormatter.formatPhoneNumber(userResponse);
-        ApplicationEntity application = botCache.getApplicationEntity(telegramId);
+        Application application = botCache.getApplicationEntity(telegramId);
         if (Objects.isNull(application.getPhoneNumber())) {
             botCache.setBotState(telegramId, CHOOSE_CONTACT_METHOD_STATE);
             rassvetBot.sendResponse(SendMessage.builder()
@@ -221,6 +217,7 @@ public class ApplyCommand implements Command {
                 .replyMarkup(KeyboardFactory.contactOptions())
                 .build());
     }
+
     private void saveContactMethod(Update update) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
@@ -233,7 +230,7 @@ public class ApplyCommand implements Command {
                     .replyMarkup(KeyboardFactory.contactOptions())
                     .build());
         }
-        ApplicationEntity application = botCache.getApplicationEntity(telegramId);
+        Application application = botCache.getApplicationEntity(telegramId);
         application.setContactMethod(contactMethod);
         botCache.setApplicationEntity(telegramId, application);
         botCache.setBotState(telegramId, INPUT_EXPERIENCE_STATE);
@@ -256,14 +253,18 @@ public class ApplyCommand implements Command {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
         String userResponse = update.getMessage().getText();
-        ApplicationEntity application = botCache.getApplicationEntity(telegramId);
+        Application application = botCache.getApplicationEntity(telegramId);
         if (Objects.isNull(application.getExperience())) {
-            botCache.setBotState(telegramId, INPUT_HOURS_PER_WEEK_IN_PREFER_STATE);
             rassvetBot.sendResponse(SendMessage.builder()
                     .text("Информация о вашем опыте работы успешно сохранена!")
                     .chatId(chatId)
                     .build());
-            inputHoursPerWeekInPrefer(update);
+            if(!application.getQuestionnaire().getQuestions().isEmpty()) {
+                botCache.setBotState(telegramId, ANSWERING_EXTRA_QUESTIONS);
+            } else {
+                botCache.setBotState(telegramId, FINISHED_QUESTIONNAIRE);
+                //TODO: метод просмотра всей анкеты (ответы на вопросы) + возможность редакции
+            }
         } else {
             botCache.setBotState(telegramId, EDITING_APPLICATION);
             rassvetBot.sendResponse(SendMessage.builder()
@@ -273,38 +274,6 @@ public class ApplyCommand implements Command {
         }
         application.setExperience(userResponse);
         botCache.setApplicationEntity(telegramId, application);
-    }
-
-    private void inputEducation(Update update) {
-        // ЕСЛИ УЧИШЬСЯ ТО КАКАЯ ФОРМА + ОБРАЗОВАНИЕ И КУРСЫ ПОВЫШЕНИЯ КВАЛ
-    }
-
-    private void saveEducation(Update update){
-
-    }
-
-    private void inputHoursPerWeekInPrefer(Update update) {
-
-    }
-
-    private void saveHoursPerWeekInPrefer(Update update) {
-
-    }
-
-    private void inputDirectionsInPrefer(Update update) {
-
-    }
-
-    private void saveDirectionsInPrefer(Update update) {
-
-    }
-
-    private void inputDaysAndHoursInPrefer(Update update){
-
-    }
-
-    private void saveDaysAndHoursInPrefer(Update update){
-
     }
 
 }

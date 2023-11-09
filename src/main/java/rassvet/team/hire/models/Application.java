@@ -1,27 +1,27 @@
 package rassvet.team.hire.models;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 import rassvet.team.hire.models.enums.ContactMethod;
-import rassvet.team.hire.models.enums.Position;
 
-@Document("applications")
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class ApplicationEntity {
+@Component
+public class Application {
     @Id
     private String id;
     private String telegramId;
-    private Position position;
-    private String name;
+    private String fullName;
     private int age;
     private String phoneNumber;
     private ContactMethod contactMethod;
     private String experience;
-    private String desiredHoursPerWeek;
+    private Questionnaire questionnaire;
+    private List<Answer> answers;
 }
