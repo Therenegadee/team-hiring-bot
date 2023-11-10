@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import rassvet.team.hire.bot.handler.UpdateHandler;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -28,13 +29,9 @@ public class RassvetBot extends TelegramLongPollingBot {
         updateHandler.handleUpdate(update);
     }
 
-    public void sendResponse(SendMessage responseMsg) {
-        try {
-            execute(responseMsg);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void onUpdatesReceived(List<Update> updates) {
+        onUpdateReceived(updates.get(updates.size()-1));
     }
-
 
 }

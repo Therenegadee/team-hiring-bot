@@ -1,30 +1,43 @@
-CREATE TABLE IF NOT EXISTS questionnaire (
-    id BIGINT PRIMARY KEY,
-    position VARCHAR(255)
-);
+CREATE SCHEMA IF NOT EXISTS rassvet_team_bot;
 
-CREATE TABLE IF NOT EXISTS question (
-    id BIGINT PRIMARY KEY,
-    question_text VARCHAR(255),
-    questionnaire_id BIGINT,
-    FOREIGN KEY (questionnaire_id) REFERENCES questionnaire(id)
-);
-
-CREATE TABLE IF NOT EXISTS answer (
-    id BIGINT PRIMARY KEY,
-    answer_text VARCHAR(255),
-    question_id BIGINT,
-    FOREIGN KEY (question_id) REFERENCES question(id)
+CREATE TABLE IF NOT EXISTS vacancy (
+    id                  BIGINT   PRIMARY KEY,
+    position_name       VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS application (
-    id VARCHAR(255) PRIMARY KEY,
-    telegram_id VARCHAR(255),
-    full_name VARCHAR(255),
-    age INT,
-    phone_number VARCHAR(255),
-    contact_method VARCHAR(255),
-    experience VARCHAR(255),
-    questionnaire_id BIGINT,
-    FOREIGN KEY (questionnaire_id) REFERENCES questionnaire(id)
+    id                  VARCHAR  PRIMARY KEY,
+    telegram_id         VARCHAR,
+    vacancy_id          BIGINT,
+    full_name           VARCHAR,
+    age                 INT,
+    phone_number        VARCHAR,
+    contact_method      VARCHAR,
+    experience          VARCHAR,
+    FOREIGN KEY (vacancy_id) REFERENCES vacancy(id)
+);
+
+CREATE TABLE IF NOT EXISTS vacancy_questions (
+    id                  BIGINT      PRIMARY KEY,
+    question_text       VARCHAR,
+    vacancy_id          BIGINT,
+    FOREIGN KEY (vacancy_id) REFERENCES vacancy(id)
+);
+
+CREATE TABLE IF NOT EXISTS application_answers (
+    application_id      BIGINT,
+    question_id         BIGINT,
+    answer_text         VARCHAR,
+    FOREIGN KEY (application_id) REFERENCES application(id),
+    FOREIGN KEY (question_id) REFERENCES question(id)
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id              BIGINT      PRIMARY KEY,
+    role            VARCHAR,
+    telegram_id     VARCHAR,
+    username        VARCHAR,
+    phone_number    VARCHAR,
+    full_name       VARCHAR,
+    secret_key      VARCHAR
 );

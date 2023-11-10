@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Component;
 import rassvet.team.hire.models.enums.ContactMethod;
 
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -22,6 +22,6 @@ public class Application {
     private String phoneNumber;
     private ContactMethod contactMethod;
     private String experience;
-    private Questionnaire questionnaire;
-    private List<Answer> answers;
+    private Vacancy vacancy;
+    private Map<String, String> answers;
 }

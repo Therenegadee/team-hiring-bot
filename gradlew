@@ -24,7 +24,7 @@
 #
 #   (1) You need a POSIX-compliant shell to run this script. If your /bin/sh is
 #       noncompliant, but you have some other compliant shell such as ksh or
-#       bash, then to run this script, type that shell name before the whole
+#       bash, then to run this script, type that shell positionName before the whole
 #       command line, like:
 #
 #           ksh Gradle
@@ -161,7 +161,7 @@ fi
 
 # Collect all arguments for the java command, stacking in reverse order:
 #   * args from the command line
-#   * the main class name
+#   * the main class positionName
 #   * -classpath
 #   * -D...appname settings
 #   * --module-path (only if needed)
@@ -187,7 +187,7 @@ if "$cygwin" || "$msys" ; then
             arg=$( cygpath --path --ignore --mixed "$arg" )
         fi
         # Roll the args list around exactly as many times as the number of
-        # args, so each arg winds up back in the position where it started, but
+        # args, so each arg winds up back in the positionName where it started, but
         # possibly modified.
         #
         # NB: a `for` loop captures its iteration list before it begins, so

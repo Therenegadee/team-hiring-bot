@@ -3,6 +3,7 @@ package rassvet.team.hire.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,8 +12,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Component
-public class Question {
+public class Vacancy {
+    @Id
     private Long id;
-    private String questionText;
-    private List<Answer> answers;
+    private String positionName;
+    private List<String> questions;
 }
