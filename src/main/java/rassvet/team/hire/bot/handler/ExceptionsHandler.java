@@ -5,9 +5,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import rassvet.team.hire.bot.exceptions.BadTextRequestException;
-import rassvet.team.hire.bot.exceptions.InternalException;
-import rassvet.team.hire.bot.exceptions.UnknownCommandException;
+import rassvet.team.hire.bot.exceptions.*;
 import rassvet.team.hire.bot.service.BotService;
 
 import static rassvet.team.hire.bot.utils.Consts.*;
@@ -37,6 +35,16 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(UnknownCommandException.class)
     public void handleUnknownCommandException(Update update) {
+        //TODO: написать логику
+    }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public void handleUserNotFoundException(Update update) {
+        //TODO: написать логику
+    }
+
+    @ExceptionHandler(IncorrectSecretKeyException.class)
+    public void handleIncorrectSecretKeyException(Update update) {
+        //TODO: написать логику
     }
 }

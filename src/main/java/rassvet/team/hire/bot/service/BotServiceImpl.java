@@ -1,6 +1,5 @@
 package rassvet.team.hire.bot.service;
 
-import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -105,9 +104,9 @@ public class BotServiceImpl implements BotService {
 
     private String getMessageForStaffHelpCommand(Role role) {
         return switch (role) {
-            case CREATOR -> String.format(HELP_WINDOW_FOR_STAFF, "тренера, администратора и на любую другую должность.");
-            case SENIOR_TRAINER -> String.format(HELP_WINDOW_FOR_STAFF, "тренера");
-            case SENIOR_ADMIN -> String.format(HELP_WINDOW_FOR_STAFF, "администратора");
+            case CREATOR -> String.format(INFO_WINDOW_FOR_STAFF, "тренера, администратора и на любую другую должность.");
+            case SENIOR_TRAINER -> String.format(INFO_WINDOW_FOR_STAFF, "тренера");
+            case SENIOR_ADMIN -> String.format(INFO_WINDOW_FOR_STAFF, "администратора");
         };
     }
 }
