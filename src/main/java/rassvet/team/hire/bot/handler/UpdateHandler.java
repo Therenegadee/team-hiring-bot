@@ -2,10 +2,9 @@ package rassvet.team.hire.bot.handler;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.BotCache;
-import rassvet.team.hire.bot.cache.BotState;
+import rassvet.team.hire.bot.cache.enums.BotState;
 import rassvet.team.hire.bot.commands.Command;
 import rassvet.team.hire.bot.commands.CommandSetter;
 import rassvet.team.hire.bot.exceptions.UnknownCommandException;
@@ -28,7 +27,7 @@ public class UpdateHandler {
         }
         Command command = commandSetter.setCommand(update);
         if (Objects.isNull(command)) {
-            throw new UnknownCommandException();
+            throw new UnknownCommandException(update);
         } else {
             if(update.getMessage().getText().startsWith("/")) {
                 command.handleCommand(update, botState);

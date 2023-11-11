@@ -6,8 +6,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import rassvet.team.hire.bot.RassvetBot;
-import rassvet.team.hire.bot.cache.BotState;
+import rassvet.team.hire.bot.cache.enums.BotState;
 import rassvet.team.hire.bot.exceptions.BadTextRequestException;
+import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.dao.interfaces.UserDao;
 import rassvet.team.hire.models.User;
 import rassvet.team.hire.models.enums.Role;
@@ -36,7 +37,7 @@ public class BotServiceImpl implements BotService {
         if (userDao.existsByTelegramId(telegramId)) {
             User user = userDao.findByTelegramId(telegramId).get();
             return processStaffBasicCases(update, user);
-        } else if (botState.equals(BotState.BASIC_STATE) && !messageRequest.startsWith("/")) {
+        } else if (botState.equals(BotState.APPLICANT_STATE) && !messageRequest.startsWith("/")) {
             throw new BadTextRequestException();
         } else {
             return processApplicantBasicCases(messageRequest, update);

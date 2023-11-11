@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.BotCache;
-import rassvet.team.hire.bot.cache.BotState;
-import rassvet.team.hire.bot.service.BotService;
+import rassvet.team.hire.bot.cache.enums.BotState;
+import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.dao.interfaces.VacancyDao;
 
 @Service
@@ -27,7 +27,7 @@ public class CommandSetter {
                 return new ApplyCommand(botCache, botService, vacancyDao);
             }
             case ADMIN_STATE -> {
-                return new AdminBoardCommand();
+                return new AdminBoardCommand(botCache, botService);
             }
             default -> {
                 return null;
@@ -39,8 +39,9 @@ public class CommandSetter {
         String requestMessage = update.getMessage().getText();
         Long telegramId = update.getMessage().getFrom().getId();
         BotState botState = switch (requestMessage) {
+            case "/admin" -> BotState.ADMIN_STATE;
             case "/apply" -> BotState.CHOOSE_POSITION_STATE;
-            case "/login" -> BotState.INPUT_SECRET_STAFF_CODE;
+            case "/auth" -> BotState.INPUT_SECRET_STAFF_CODE_STATE;
             default -> botCache.getBotState(telegramId);
         };
         botCache.setBotState(telegramId, botState);

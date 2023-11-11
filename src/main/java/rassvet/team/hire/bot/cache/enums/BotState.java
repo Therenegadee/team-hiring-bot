@@ -1,7 +1,7 @@
-package rassvet.team.hire.bot.cache;
+package rassvet.team.hire.bot.cache.enums;
 
 public enum BotState {
-    BASIC_STATE,
+    APPLICANT_STATE,
     CHOOSE_POSITION_STATE,
     INPUT_FULL_NAME_STATE,
     INPUT_AGE_STATE,
@@ -17,6 +17,9 @@ public enum BotState {
     ANSWERING_EXTRA_QUESTIONS_STATE,
     FINISHED_QUESTIONNAIRE_STATE,
     EDITING_APPLICATION_STATE,
-    INPUT_SECRET_STAFF_CODE,
-    ADMIN_STATE
+
+
+    INPUT_SECRET_STAFF_CODE_STATE,
+    ADMIN_STATE,
+    WATCHING_STAFF,
 }

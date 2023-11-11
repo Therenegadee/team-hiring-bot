@@ -12,7 +12,6 @@ public class PhoneNumberFormatter {
                 cleanedNumber.substring(4, 7) + "-" +
                 cleanedNumber.substring(7, 9) + "-" +
                 cleanedNumber.substring(9);
-
         return formattedNumber;
     }
 

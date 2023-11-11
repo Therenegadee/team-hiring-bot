@@ -105,6 +105,19 @@ public class Consts {
             Отправьте данный рассказ одним сообщением в ответ на это.
             Расскажите о своем опыте как можно подробнее (как давно ведете, какие направления вели, и т.п.)
             Если есть спортивные звания или разряды, обязательно их укажи!""";
+
     // MESSAGES FOR STAFF LOGIN COMMAND
     public static final String INPUT_YOUR_SECRET_CODE = "Введите ваш код сотрудника";
+
+    // KEYBOARD BUTTONS
+    public static final String APPLICATIONS_BUTTON = "Заявления на работу";
+    public static final String VACANCIES_BUTTON = "Вакансии";
+    public static final String STAFF_BUTTON = "Сотрудники";
+
+    public static final String SHOW_ACTIVE_APPLICATIONS_BUTTON = "Посмотреть активные заявки";
+    public static final String SHOW_ALL_APPLICATIONS_BUTTON = "Посмотреть все заявки (актив/принято/отказ/архивные)";
+    public static final String SHOW_REFUSED_APPLICATIONS_BUTTON = "Посмотреть заявки со статусом ОТКАЗАНО";
+
+    public static final String SHOW_OPEN_VACANCIES_BUTTON = "Посмотреть открытые вакансии";
+    public static final String SHOW_CURRENT_STAFF = "Посмотреть работников с доступом к боту";
 }
