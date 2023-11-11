@@ -118,6 +118,9 @@ public class Consts {
     public static final String SHOW_ALL_APPLICATIONS_BUTTON = "Посмотреть все заявки (актив/принято/отказ/архивные)";
     public static final String SHOW_REFUSED_APPLICATIONS_BUTTON = "Посмотреть заявки со статусом ОТКАЗАНО";
 
-    public static final String SHOW_OPEN_VACANCIES_BUTTON = "Посмотреть открытые вакансии";
     public static final String SHOW_CURRENT_STAFF = "Посмотреть работников с доступом к боту";
+    public static final String EDIT_STAFF_MEMBER_BUTTON = "Редактировать данные";
+    public static final String DELETE_STAFF_MEMBER_BUTTON = "Удалить сотрудника";
+
+    public static final String SHOW_OPEN_VACANCIES_BUTTON = "Посмотреть открытые вакансии";
 }

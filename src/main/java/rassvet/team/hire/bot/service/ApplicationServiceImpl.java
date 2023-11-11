@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.service.interfaces.ApplicationService;
 import rassvet.team.hire.bot.service.interfaces.BotService;
-import rassvet.team.hire.bot.utils.KeyboardFactory;
+import rassvet.team.hire.bot.utils.ReplyMarkupKeyboardFactory;
 import rassvet.team.hire.bot.utils.PhoneNumberFormatter;
 import rassvet.team.hire.bot.utils.Validator;
 import rassvet.team.hire.dao.interfaces.VacancyDao;
@@ -37,7 +37,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         botService.sendResponse(SendMessage.builder()
                 .chatId(chatId)
                 .text(CHOOSE_DESIRED_POSITION)
-                .replyMarkup(KeyboardFactory.positionKeyboard())
+                .replyMarkup(ReplyMarkupKeyboardFactory.positionKeyboard())
                 .build());
     }
 
@@ -52,7 +52,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             botService.sendResponse(SendMessage.builder()
                     .text(INCORRECT_INPUT_FOR_KEYBOARDS)
                     .chatId(chatId)
-                    .replyMarkup(KeyboardFactory.positionKeyboard())
+                    .replyMarkup(ReplyMarkupKeyboardFactory.positionKeyboard())
                     .build());
         }
         Vacancy vacancy = questionnaireOpt.get();
@@ -198,7 +198,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         botService.sendResponse(SendMessage.builder()
                 .chatId(chatId)
                 .text(INPUT_PHONE_NUMBER)
-                .replyMarkup(KeyboardFactory.contactOptions())
+                .replyMarkup(ReplyMarkupKeyboardFactory.contactOptions())
                 .build());
     }
 
@@ -212,7 +212,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             botService.sendResponse(SendMessage.builder()
                     .chatId(chatId)
                     .text(INCORRECT_INPUT_FOR_KEYBOARDS)
-                    .replyMarkup(KeyboardFactory.contactOptions())
+                    .replyMarkup(ReplyMarkupKeyboardFactory.contactOptions())
                     .build());
         }
         Application application = botCache.getApplicationEntity(telegramId);
