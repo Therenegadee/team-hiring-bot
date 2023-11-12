@@ -4,8 +4,5 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface ApplicationsBoardService {
     void showApplicationsBoard(Update update);
-
-    void processApplicationsBoardInput(Update update);
-
-    void showActiveApplications(Update update);
+    void handleCallbackQuery(Update update, String callbackData);
 }

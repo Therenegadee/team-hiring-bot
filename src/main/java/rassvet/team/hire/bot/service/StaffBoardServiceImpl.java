@@ -10,6 +10,7 @@ import rassvet.team.hire.bot.exceptions.UnknownCommandException;
 import rassvet.team.hire.bot.exceptions.UserNotFoundException;
 import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.bot.service.interfaces.StaffBoardService;
+import rassvet.team.hire.bot.utils.InlineKeyboardMarkupFactory;
 import rassvet.team.hire.bot.utils.ReplyMarkupKeyboardFactory;
 import rassvet.team.hire.dao.interfaces.UserDao;
 import rassvet.team.hire.models.User;
@@ -28,22 +29,23 @@ public class StaffBoardServiceImpl implements StaffBoardService {
     private final UserDao userDao;
 
     @Override
+    public void handleCallbackQuery(Update update, String callbackData) {
+        String secondPrefixOfCallbackData = callbackData.split(" ")[1];
+        switch (secondPrefixOfCallbackData) {
+            case "BOARD" -> showStaffBoard(update);
+            case "DELETE" -> ;
+            case "EDIT" -> ;
+        }
+    }
+
+    @Override
     public void showStaffBoard(Update update) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
         botService.sendResponse(SendMessage.builder()
                 .chatId(chatId)
-                .replyMarkup(ReplyMarkupKeyboardFactory.adminBoardKeyboard(update, telegramId))
+                .replyMarkup(InlineKeyboardMarkupFactory.staffBoardKeyboard(update))
                 .build());
-    }
-
-    @Override
-    public void processStaffBoardInput(Update update) {
-        Message message = update.getMessage();
-        String userInput = message.getText();
-        switch (userInput) {
-            case SHOW_CURRENT_STAFF -> showCurrentStaff(update);
-        }
     }
 
     private void showCurrentStaff(Update update) {
@@ -76,7 +78,7 @@ public class StaffBoardServiceImpl implements StaffBoardService {
                         .chatId(chatId)
                         .disableNotification(true)
                         .text(userInfo)
-                        .replyMarkup(ReplyMarkupKeyboardFactory.actionsTowardsStaffKeyboard(user))
+                        .replyMarkup(InlineKeyboardMarkupFactory.actionsTowardsStaffKeyboard(user))
                         .build()
         );
     }

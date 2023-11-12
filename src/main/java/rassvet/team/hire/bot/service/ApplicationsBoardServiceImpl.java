@@ -3,14 +3,12 @@ package rassvet.team.hire.bot.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.service.interfaces.ApplicationsBoardService;
 import rassvet.team.hire.bot.service.interfaces.BotService;
-import rassvet.team.hire.bot.utils.ReplyMarkupKeyboardFactory;
-
-import static rassvet.team.hire.bot.utils.Consts.SHOW_ACTIVE_APPLICATIONS_BUTTON;
+import rassvet.team.hire.bot.utils.InlineKeyboardMarkupFactory;
+import rassvet.team.hire.models.enums.ApplicationStatus;
 
 @Service
 @RequiredArgsConstructor
@@ -19,26 +17,38 @@ public class ApplicationsBoardServiceImpl implements ApplicationsBoardService {
     private final BotService botService;
 
     @Override
+    public void handleCallbackQuery(Update update, String callbackData) {
+        String secondPrefixOfCallbackData = callbackData.split(" ")[1];
+        switch (secondPrefixOfCallbackData) {
+            case "BOARD" -> showApplicationsBoard(update);
+            case "SHOW" -> {
+                String thirdPrefixOfCallbackData = callbackData.split(" ")[2];
+                switch (thirdPrefixOfCallbackData) {
+                    case "ALL" -> showApplications(update);
+                    case "ACTIVE" -> showApplications(update, ApplicationStatus.IN_CONSIDERATION);
+                    case "REFUSED" -> showApplications(update, ApplicationStatus.REFUSED);
+                    case "ARCHIVE" -> showApplications(update, ApplicationStatus.ARCHIVE);
+                }
+            }
+        }
+    }
+    @Override
     public void showApplicationsBoard(Update update) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
         botService.sendResponse(SendMessage.builder()
                 .chatId(chatId)
-                .replyMarkup(ReplyMarkupKeyboardFactory.applicationsBoardKeyboard(update))
+                .replyMarkup(InlineKeyboardMarkupFactory.applicationsBoardKeyboard(update))
                 .build());
     }
 
-    @Override
-    public void processApplicationsBoardInput(Update update) {
-        Message message = update.getMessage();
-        String userInput = message.getText();
-        switch (userInput) {
-            case SHOW_ACTIVE_APPLICATIONS_BUTTON -> showActiveApplications(update);
-        }
+
+    public void showApplications(Update update, ApplicationStatus applicationStatus) {
+        Long telegramId = update.getMessage().getFrom().getId();
+        String chatId = update.getMessage().getChatId().toString();
     }
 
-    @Override
-    public void showActiveApplications(Update update) {
+    public void showApplications(Update update) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
     }

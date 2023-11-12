@@ -21,61 +21,75 @@ public class InlineKeyboardMarkupFactory {
     private static UserDao userDao;
 
     public static InlineKeyboardMarkup actionsTowardsStaffKeyboard(User user) {
-        InlineKeyboardButton button1 = InlineKeyboardButton.builder()
-                .text(EDIT_STAFF_MEMBER_BUTTON)
-                .callbackData("EDIT " + user.getId())
-                .build();
-        InlineKeyboardButton button2 = InlineKeyboardButton.builder()
-                .text(DELETE_STAFF_MEMBER_BUTTON)
-                .callbackData("DELETE " + user.getId())
-                .build();
+        List<InlineKeyboardButton> buttons = List.of(
+                InlineKeyboardButton.builder()
+                        .text(EDIT_STAFF_MEMBER_BUTTON)
+                        .callbackData("STAFF EDIT " + user.getId())
+                        .build(),
+                InlineKeyboardButton.builder()
+                        .text(DELETE_STAFF_MEMBER_BUTTON)
+                        .callbackData("STAFF DELETE " + user.getId())
+                        .build());
         return InlineKeyboardMarkup.builder()
-                .keyboardRow(List.of(button1, button2))
+                .keyboardRow(buttons)
+                .build();
+    }
+
+    public static InlineKeyboardMarkup staffBoardKeyboard(Update update) {
+        List<InlineKeyboardButton> buttons = List.of(
+        InlineKeyboardButton.builder()
+                .text(SHOW_CURRENT_STAFF)
+                .callbackData("STAFF SHOW ALL")
+                .build());
+        return InlineKeyboardMarkup.builder()
+                .keyboardRow(buttons)
                 .build();
     }
 
     public static InlineKeyboardMarkup applicationsBoardKeyboard(Update update) {
-        InlineKeyboardButton button1 = InlineKeyboardButton.builder()
-                .text(SHOW_ACTIVE_APPLICATIONS_BUTTON)
-                .callbackData("APPLICATIONS SHOW ACTIVE")
-                .build();
-        InlineKeyboardButton button2 = InlineKeyboardButton.builder()
-                .text(SHOW_ALL_APPLICATIONS_BUTTON)
-                .callbackData("APPLICATIONS SHOW ALL")
-                .build();
-        InlineKeyboardButton button3 = InlineKeyboardButton.builder()
-                .text(SHOW_REFUSED_APPLICATIONS_BUTTON)
-                .callbackData("APPLICATIONS SHOW REFUSED")
-                .build();
+        List<InlineKeyboardButton> buttons = List.of(
+                InlineKeyboardButton.builder()
+                        .text(SHOW_ACTIVE_APPLICATIONS_BUTTON)
+                        .callbackData("APPLICATIONS SHOW ACTIVE")
+                        .build(),
+                InlineKeyboardButton.builder()
+                        .text(SHOW_ALL_APPLICATIONS_BUTTON)
+                        .callbackData("APPLICATIONS SHOW ALL")
+                        .build(),
+                InlineKeyboardButton.builder()
+                        .text(SHOW_REFUSED_APPLICATIONS_BUTTON)
+                        .callbackData("APPLICATIONS SHOW REFUSED")
+                        .build(),
+                InlineKeyboardButton.builder()
+                        .text(SHOW_REFUSED_APPLICATIONS_BUTTON)
+                        .callbackData("APPLICATIONS SHOW ARCHIVE")
+                        .build());
         return InlineKeyboardMarkup.builder()
-                .keyboardRow(List.of(button1, button2, button3))
+                .keyboardRow(buttons)
                 .build();
     }
 
     public static InlineKeyboardMarkup adminBoardKeyboard(Update update, Long telegramId) {
-        List<InlineKeyboardButton> buttonList = new ArrayList<>();
+        List<InlineKeyboardButton> buttons = new ArrayList<>();
         Role role = userDao.findByTelegramId(telegramId)
                 .orElseThrow(() -> new UserNotFoundException(update))
                 .getRole();
-        InlineKeyboardButton button1 = InlineKeyboardButton.builder()
+        buttons.add(InlineKeyboardButton.builder()
                 .text(APPLICATIONS_BUTTON)
-                .callbackData("APPLICATIONS SHOW")
-                .build();
-        InlineKeyboardButton button2 = InlineKeyboardButton.builder()
+                .callbackData("APPLICATIONS BOARD")
+                .build());
+        buttons.add(InlineKeyboardButton.builder()
                 .text(VACANCIES_BUTTON)
-                .callbackData("VACANCIES SHOW")
-                .build();
-        buttonList.add(button1);
-        buttonList.add(button2);
+                .callbackData("VACANCIES BOARD")
+                .build());
         if (role.equals(Role.CREATOR)) {
-            InlineKeyboardButton button3 = InlineKeyboardButton.builder()
+            buttons.add(InlineKeyboardButton.builder()
                     .text(STAFF_BUTTON)
-                    .callbackData("STAFF SHOW")
-                    .build();
-            buttonList.add(button3);
+                    .callbackData("STAFF BOARD")
+                    .build());
         }
         return InlineKeyboardMarkup.builder()
-                .keyboardRow(buttonList)
+                .keyboardRow(buttons)
                 .build();
     }
 }

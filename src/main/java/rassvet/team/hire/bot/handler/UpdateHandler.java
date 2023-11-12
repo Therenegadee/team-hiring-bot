@@ -18,22 +18,24 @@ public class UpdateHandler {
     private final CommandSetter commandSetter;
     private final BotCache botCache;
     private final BotServiceImpl botService;
+    private final CallbackQueryHandler callbackQueryHandler;
 
     public void handleUpdate(Update update) {
         Long telegramId = update.getMessage().getFrom().getId();
         BotState botState = botCache.getBotState(telegramId);
-        if(botService.processBasicCases(update, botState) == 1) {
+        if (botService.processBasicCases(update, botState) == 1) {
             return;
         }
         Command command = commandSetter.setCommand(update);
         if (Objects.isNull(command)) {
             throw new UnknownCommandException(update);
+        }
+        if (update.hasCallbackQuery()) {
+            callbackQueryHandler.handle(update);
+        } else if (update.getMessage().getText().startsWith("/")) {
+            command.handleCommand(update, botState);
         } else {
-            if(update.getMessage().getText().startsWith("/")) {
-                command.handleCommand(update, botState);
-            } else {
-                command.handleTextInput(update, botState);
-            }
+            command.handleTextInput(update, botState);
         }
     }
 }

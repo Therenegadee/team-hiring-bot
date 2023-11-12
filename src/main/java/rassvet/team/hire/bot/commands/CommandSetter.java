@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.cache.enums.BotState;
+import rassvet.team.hire.bot.service.interfaces.ApplicationService;
 import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.dao.interfaces.VacancyDao;
 
@@ -13,7 +14,7 @@ import rassvet.team.hire.dao.interfaces.VacancyDao;
 public class CommandSetter {
     private final BotCache botCache;
     private final BotService botService;
-    private final VacancyDao vacancyDao;
+    private final ApplicationService applicationService;
 
     public Command setCommand(Update update) {
         if(update.getMessage().getText().startsWith("/")) {
@@ -24,10 +25,10 @@ public class CommandSetter {
             case INPUT_AGE_STATE, INPUT_EXPERIENCE_STATE, INPUT_FULL_NAME_STATE,
                     INPUT_PHONE_NUMBER_STATE, CHOOSE_POSITION_STATE,
                     CHOOSE_CONTACT_METHOD_STATE,  ANSWERING_EXTRA_QUESTIONS_STATE -> {
-                return new ApplyCommand(botCache, botService, vacancyDao);
+                return new ApplyCommand(applicationService);
             }
             case ADMIN_STATE -> {
-                return new AdminBoardCommand(botCache, botService);
+                return new AdminBoardCommand(botService);
             }
             default -> {
                 return null;
