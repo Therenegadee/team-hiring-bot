@@ -29,24 +29,30 @@ public class InlineKeyboardMarkupFactory {
                 InlineKeyboardButton.builder()
                         .text(DELETE_STAFF_MEMBER_BUTTON)
                         .callbackData("STAFF DELETE " + user.getId())
-                        .build());
+                        .build()
+        );
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(buttons)
                 .build();
     }
 
-    public static InlineKeyboardMarkup staffBoardKeyboard(Update update) {
+    public static InlineKeyboardMarkup staffBoardKeyboard() {
         List<InlineKeyboardButton> buttons = List.of(
         InlineKeyboardButton.builder()
                 .text(SHOW_CURRENT_STAFF)
-                .callbackData("STAFF SHOW ALL")
-                .build());
+                .callbackData("STAFF SHOW")
+                .build(),
+        InlineKeyboardButton.builder()
+                .text(SHOW_CURRENT_STAFF)
+                .callbackData("STAFF ADD")
+                .build()
+        );
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(buttons)
                 .build();
     }
 
-    public static InlineKeyboardMarkup applicationsBoardKeyboard(Update update) {
+    public static InlineKeyboardMarkup applicationsBoardKeyboard() {
         List<InlineKeyboardButton> buttons = List.of(
                 InlineKeyboardButton.builder()
                         .text(SHOW_ACTIVE_APPLICATIONS_BUTTON)
@@ -63,7 +69,8 @@ public class InlineKeyboardMarkupFactory {
                 InlineKeyboardButton.builder()
                         .text(SHOW_REFUSED_APPLICATIONS_BUTTON)
                         .callbackData("APPLICATIONS SHOW ARCHIVE")
-                        .build());
+                        .build()
+        );
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(buttons)
                 .build();
