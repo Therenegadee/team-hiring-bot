@@ -15,7 +15,7 @@ public class UpdateHandler {
     private final CommandSetter commandSetter;
     private final BotCache botCache;
     private final BotServiceImpl botService;
-    private final CallbackQueryHandler callbackQueryHandler;
+    private final CallbackQueryHandlerImpl callbackQueryHandler;
 
     public void handleUpdate(Update update) {
         Long telegramId = update.getMessage().getFrom().getId();
@@ -24,7 +24,8 @@ public class UpdateHandler {
             return;
         }
         if (update.hasCallbackQuery()) {
-            callbackQueryHandler.handle(update);
+            String callbackData = update.getCallbackQuery().getData();
+            callbackQueryHandler.handleCallbackQuery(update, callbackData);
             return;
         }
         Command command = commandSetter.setCommand(update);

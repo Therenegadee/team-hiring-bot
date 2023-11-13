@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum ApplicationStatus {
-    IN_CONSIDERATION("IN_CONSIDERATION"),
-    REFUSED("REFUSED"),
-    ARCHIVE("ARCHIVE");
+    APPROVED("Приглашен(а) на собеседование"),
+    IN_CONSIDERATION("На рассмотрении"),
+    REJECTED("Отказано");
 
     private String value;
 

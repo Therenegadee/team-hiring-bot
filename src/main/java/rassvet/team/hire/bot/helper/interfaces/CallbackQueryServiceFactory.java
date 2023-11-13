@@ -1,7 +1,7 @@
 package rassvet.team.hire.bot.helper.interfaces;
 
-import rassvet.team.hire.bot.service.interfaces.CallbackQueryService;
+import rassvet.team.hire.bot.handler.interfaces.CallbackQueryHandler;
 
 public interface CallbackQueryServiceFactory {
-    CallbackQueryService createService(String callbackData);
+    CallbackQueryHandler createService(String callbackData);
 }

@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.enums.BotState;
-import rassvet.team.hire.bot.service.interfaces.ApplicationsBoardService;
 import rassvet.team.hire.bot.service.interfaces.BotService;
-import rassvet.team.hire.bot.service.interfaces.StaffBoardService;
-import rassvet.team.hire.bot.service.interfaces.VacancyBoardService;
 import rassvet.team.hire.bot.utils.InlineKeyboardMarkupFactory;
 
 @Service

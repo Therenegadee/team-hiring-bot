@@ -1,9 +1,14 @@
 version: '3'
 
 services:
-  mongodb:
-    image: mongo:6-jammy
+  db-rassvet:
+    image: postgres
+    container_name: db-rassvet
+    environment:
+      - POSTGRES_DB=rassvet
+      - POSTGRES_USER=rassvet
+      - POSTGRES_PASSWORD=rassvet
     ports:
-    - '27017:27017'
+      - "5432:5432"
     volumes:
-    - dbdata6:/data/db
+     - ./src/resources/db:/docker-entrypoint-initdb.d

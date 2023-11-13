@@ -59,22 +59,51 @@ public class InlineKeyboardMarkupFactory {
                         .callbackData("APPLICATIONS SHOW ACTIVE")
                         .build(),
                 InlineKeyboardButton.builder()
+                        .text(SHOW_ACTIVE_APPLICATIONS_BUTTON)
+                        .callbackData("APPLICATIONS SHOW APPROVED")
+                        .build(),
+                InlineKeyboardButton.builder()
                         .text(SHOW_ALL_APPLICATIONS_BUTTON)
                         .callbackData("APPLICATIONS SHOW ALL")
                         .build(),
                 InlineKeyboardButton.builder()
                         .text(SHOW_REFUSED_APPLICATIONS_BUTTON)
-                        .callbackData("APPLICATIONS SHOW REFUSED")
-                        .build(),
-                InlineKeyboardButton.builder()
-                        .text(SHOW_REFUSED_APPLICATIONS_BUTTON)
-                        .callbackData("APPLICATIONS SHOW ARCHIVE")
+                        .callbackData("APPLICATIONS SHOW REJECTED")
                         .build()
         );
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(buttons)
                 .build();
     }
+
+    public static InlineKeyboardMarkup briefInfoOnApplicationKeyboard(Long applicationId){
+        List<InlineKeyboardButton> buttons = List.of(
+                InlineKeyboardButton.builder()
+                        .text("Просмотр заявления")
+                        .callbackData("APPLICATIONS SHOW ID " + applicationId)
+                        .build()
+        );
+        return InlineKeyboardMarkup.builder()
+                .keyboardRow(buttons)
+                .build();
+    }
+
+    public static InlineKeyboardMarkup wholeInfoOnApplicationKeyboard(Long applicationId){
+        List<InlineKeyboardButton> buttons = List.of(
+                InlineKeyboardButton.builder()
+                        .text("Пригласить на собеседование")
+                        .callbackData("APPLICATIONS EDIT APPROVE " + applicationId)
+                        .build(),
+                InlineKeyboardButton.builder()
+                        .text("Отклонить заявления")
+                        .callbackData("APPLICATIONS EDIT REJECT " + applicationId)
+                        .build()
+        );
+        return InlineKeyboardMarkup.builder()
+                .keyboardRow(buttons)
+                .build();
+    }
+
 
     public static InlineKeyboardMarkup adminBoardKeyboard(Update update, Long telegramId) {
         List<InlineKeyboardButton> buttons = new ArrayList<>();

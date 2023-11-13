@@ -1,3 +1,11 @@
+spring:
+  application:
+    name: rassvet-bot
+  datasource:
+    username: rassvet
+    password: rassvet
+    url: jdbc:postgresql://db-parser:5432/rassvet
+
 telegram:
   token: 6856836118:AAHP0UNrw16BtRXZBANuSaxJ6wRy7DL-AU0
   username: rassvet_team_bot

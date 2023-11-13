@@ -2,38 +2,30 @@ package rassvet.team.hire.bot.helper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.helper.interfaces.CallbackQueryServiceFactory;
-import rassvet.team.hire.bot.service.ApplicationsBoardServiceImpl;
-import rassvet.team.hire.bot.service.StaffBoardServiceImpl;
-import rassvet.team.hire.bot.service.VacancyBoardServiceImpl;
-import rassvet.team.hire.bot.service.interfaces.BotService;
-import rassvet.team.hire.bot.service.interfaces.CallbackQueryService;
-import rassvet.team.hire.dao.interfaces.UserDao;
+import rassvet.team.hire.bot.boards.ApplicationsBoardManager;
+import rassvet.team.hire.bot.boards.StaffBoardManager;
+import rassvet.team.hire.bot.boards.VacancyBoardManager;
+import rassvet.team.hire.bot.handler.interfaces.CallbackQueryHandler;
 
 @Service
 @RequiredArgsConstructor
 public class CallbackQueryServiceFactoryImpl implements CallbackQueryServiceFactory {
-    private final BotCache botCache;
-    private final BotService botService;
-    private final UserDao userDao;
-
     @Override
-    public CallbackQueryService createService(String callbackData) {
+    public CallbackQueryHandler createService(String callbackData) {
         String firstPrefix = callbackData.split(" ")[0];
         switch (firstPrefix) {
             case "APPLICATIONS" -> {
-                return new ApplicationsBoardServiceImpl(botCache, botService);
+                return new ApplicationsBoardManager();
             }
             case "STAFF" -> {
-                return new StaffBoardServiceImpl(botCache, botService, userDao);
+                return new StaffBoardManager();
             }
             case "VACANCIES" -> {
-                return new VacancyBoardServiceImpl(botCache, botService);
+                return new VacancyBoardManager();
             }
-            default -> {
-                return null;
-            }
+            //todo: добавить обработку исключения
+            default -> throw new RuntimeException();
         }
     }
 }
