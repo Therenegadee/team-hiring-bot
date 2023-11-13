@@ -1,14 +1,15 @@
 package rassvet.team.hire.models;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.stereotype.Component;
 import rassvet.team.hire.models.enums.Role;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
+@RequiredArgsConstructor
+@Table("users")
 @Component
 public class User {
     private Long id;

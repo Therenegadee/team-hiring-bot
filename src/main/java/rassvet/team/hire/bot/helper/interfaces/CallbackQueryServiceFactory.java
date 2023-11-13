@@ -1,4 +1,4 @@
-package rassvet.team.hire.bot.helper;
+package rassvet.team.hire.bot.helper.interfaces;
 
 import rassvet.team.hire.bot.service.interfaces.CallbackQueryService;
 

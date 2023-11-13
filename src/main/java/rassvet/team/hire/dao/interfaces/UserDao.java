@@ -14,7 +14,7 @@ public interface UserDao {
     Set<User> findAllByRole(Role role);
     User save(User user);
     User update(User user);
-    User updateById(Long id);
+    User updateById(Long id, User user);
     int deleteById(Long id);
     int delete(User user);
     int deleteAll();

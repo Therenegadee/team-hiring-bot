@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.cache.enums.BotState;
+import rassvet.team.hire.bot.exceptions.UnknownCommandException;
 import rassvet.team.hire.bot.service.interfaces.ApplicationService;
 import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.dao.interfaces.VacancyDao;
@@ -30,9 +31,7 @@ public class CommandSetter {
             case ADMIN_STATE -> {
                 return new AdminBoardCommand(botService);
             }
-            default -> {
-                return null;
-            }
+            default -> throw new UnknownCommandException(update);
         }
     }
 

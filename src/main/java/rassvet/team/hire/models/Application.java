@@ -1,21 +1,26 @@
 package rassvet.team.hire.models;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.stereotype.Component;
+import rassvet.team.hire.models.enums.ApplicationStatus;
 import rassvet.team.hire.models.enums.ContactMethod;
 
 import java.util.Map;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
+@Table("application")
 @Component
 public class Application {
     @Id
-    private String id;
+    private Long id;
+    private ApplicationStatus applicationStatus;
     private String telegramId;
     private String fullName;
     private int age;

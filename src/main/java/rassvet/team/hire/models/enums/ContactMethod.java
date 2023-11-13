@@ -12,4 +12,13 @@ public enum ContactMethod {
     ContactMethod(String value) {
         this.value = value;
     }
+
+    public static ContactMethod fromValue(String value) {
+        for (ContactMethod contactMethod : ContactMethod.values()) {
+            if (contactMethod.value.equals(value)) {
+                return contactMethod;
+            }
+        }
+        throw new IllegalArgumentException("Unsupported value: " + value);
+    }
 }

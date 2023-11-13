@@ -3,6 +3,7 @@ package rassvet.team.hire.bot.helper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rassvet.team.hire.bot.cache.BotCache;
+import rassvet.team.hire.bot.helper.interfaces.CallbackQueryServiceFactory;
 import rassvet.team.hire.bot.service.ApplicationsBoardServiceImpl;
 import rassvet.team.hire.bot.service.StaffBoardServiceImpl;
 import rassvet.team.hire.bot.service.VacancyBoardServiceImpl;

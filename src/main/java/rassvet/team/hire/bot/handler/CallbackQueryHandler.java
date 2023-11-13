@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.exceptions.InternalException;
-import rassvet.team.hire.bot.helper.CallbackQueryServiceFactory;
+import rassvet.team.hire.bot.helper.interfaces.CallbackQueryServiceFactory;
 import rassvet.team.hire.bot.service.interfaces.CallbackQueryService;
 
 @Service

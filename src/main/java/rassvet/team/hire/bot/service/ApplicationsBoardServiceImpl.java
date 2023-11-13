@@ -48,6 +48,7 @@ public class ApplicationsBoardServiceImpl implements BoardService, CallbackQuery
     public void showApplications(Update update, ApplicationStatus applicationStatus) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
+
     }
 
     public void showApplications(Update update) {
