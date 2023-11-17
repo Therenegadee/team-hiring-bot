@@ -10,8 +10,8 @@ import rassvet.team.hire.bot.cache.enums.BotState;
 import rassvet.team.hire.bot.exceptions.BadTextRequestException;
 import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.dao.interfaces.UserDao;
+import rassvet.team.hire.models.Role;
 import rassvet.team.hire.models.User;
-import rassvet.team.hire.models.enums.Role;
 
 import static rassvet.team.hire.bot.utils.Consts.*;
 
@@ -34,11 +34,14 @@ public class BotServiceImpl implements BotService {
     public int processBasicCases(Update update, BotState botState) {
         String messageRequest = update.getMessage().getText();
         Long telegramId = update.getMessage().getFrom().getId();
-        if (userDao.existsByTelegramId(telegramId)) {
-            User user = userDao.findByTelegramId(telegramId).get();
-            return processStaffBasicCases(update, user);
-        } else if (botState.equals(BotState.APPLICANT_STATE) && !messageRequest.startsWith("/")) {
-            throw new BadTextRequestException();
+        if (!messageRequest.startsWith("/")) {
+            throw new BadTextRequestException(update);
+        }
+        //TODO: добавить обработку исключения
+        User user = userDao.findByTelegramId(telegramId).orElseThrow();
+        Role role = user.getRole();
+        if (!role.equals("Кандидат")) {
+            return processStaffBasicCases(update);
         } else {
             return processApplicantBasicCases(messageRequest, update);
         }
@@ -73,9 +76,8 @@ public class BotServiceImpl implements BotService {
         }
     }
 
-    private int processStaffBasicCases(Update update, User user) {
+    private int processStaffBasicCases(Update update) {
         String messageRequest = update.getMessage().getText();
-        Role role = user.getRole();
         return switch (messageRequest) {
             case "/start" -> {
                 sendResponse(SendMessage.builder()
@@ -85,10 +87,9 @@ public class BotServiceImpl implements BotService {
                 yield 1;
             }
             case "/info" -> {
-                String messageForHelpCommand = getMessageForStaffHelpCommand(role);
                 sendResponse(SendMessage.builder()
                         .chatId(update.getMessage().getChatId())
-                        .text(messageForHelpCommand)
+                        .text(INFO_WINDOW_FOR_STAFF)
                         .build());
                 yield 1;
             }
@@ -100,14 +101,6 @@ public class BotServiceImpl implements BotService {
                 yield 1;
             }
             default -> 0;
-        };
-    }
-
-    private String getMessageForStaffHelpCommand(Role role) {
-        return switch (role) {
-            case CREATOR -> String.format(INFO_WINDOW_FOR_STAFF, "тренера, администратора и на любую другую должность.");
-            case SENIOR_TRAINER -> String.format(INFO_WINDOW_FOR_STAFF, "тренера");
-            case SENIOR_ADMIN -> String.format(INFO_WINDOW_FOR_STAFF, "администратора");
         };
     }
 }

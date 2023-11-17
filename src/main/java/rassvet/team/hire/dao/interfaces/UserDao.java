@@ -1,11 +1,13 @@
 package rassvet.team.hire.dao.interfaces;
 
+import org.springframework.stereotype.Repository;
+import rassvet.team.hire.models.Role;
 import rassvet.team.hire.models.User;
-import rassvet.team.hire.models.enums.Role;
 
 import java.util.Optional;
 import java.util.Set;
 
+@Repository
 public interface UserDao {
     Optional<User> findById(Long id);
     Optional<User> findByTelegramId(Long telegramId);

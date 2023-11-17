@@ -16,6 +16,7 @@ import java.util.List;
 public class Vacancy {
     @Id
     private Long id;
+    private PositionTag positionTag;
     private String positionName;
     private List<String> questions;
 }

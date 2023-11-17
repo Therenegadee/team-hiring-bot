@@ -2,23 +2,19 @@ package rassvet.team.hire.models;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @Builder
-@RequiredArgsConstructor
-@Table("users")
+@Table("roles")
 @Component
-public class User {
+public class Role {
     private Long id;
-    private Role role;
-    private String telegramId;
-    private String username;
-    private String phoneNumber;
-    private String fullName;
-    private String secretKey;
+    private String roleName;
+    private Set<PositionTag> positionTagsAllowedToModerate;
 }

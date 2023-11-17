@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import rassvet.team.hire.bot.exceptions.UserNotFoundException;
 import rassvet.team.hire.dao.interfaces.UserDao;
 import rassvet.team.hire.models.User;
-import rassvet.team.hire.models.enums.Role;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +106,7 @@ public class InlineKeyboardMarkupFactory {
 
     public static InlineKeyboardMarkup adminBoardKeyboard(Update update, Long telegramId) {
         List<InlineKeyboardButton> buttons = new ArrayList<>();
-        Role role = userDao.findByTelegramId(telegramId)
+        ERole role = userDao.findByTelegramId(telegramId)
                 .orElseThrow(() -> new UserNotFoundException(update))
                 .getRole();
         buttons.add(InlineKeyboardButton.builder()
@@ -118,7 +117,7 @@ public class InlineKeyboardMarkupFactory {
                 .text(VACANCIES_BUTTON)
                 .callbackData("VACANCIES BOARD")
                 .build());
-        if (role.equals(Role.CREATOR)) {
+        if (role.equals(ERole.CREATOR)) {
             buttons.add(InlineKeyboardButton.builder()
                     .text(STAFF_BUTTON)
                     .callbackData("STAFF BOARD")

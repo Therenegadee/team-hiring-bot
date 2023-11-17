@@ -5,12 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import rassvet.team.hire.dao.interfaces.UserDao;
 import rassvet.team.hire.mapper.UserRowMapper;
+import rassvet.team.hire.models.Role;
 import rassvet.team.hire.models.User;
-import rassvet.team.hire.models.enums.Role;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -19,6 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+//TODO: исправить добавление роли!!!
 @Repository
 @RequiredArgsConstructor
 public class UserJdbcTemplate implements UserDao {
@@ -56,8 +56,8 @@ public class UserJdbcTemplate implements UserDao {
 
     @Override
     public Set<User> findAllByRole(Role role) {
-        String query = "SELECT * FROM users WHERE role=?";
-        return new HashSet<>(jdbcTemplate.query(query, userMapper, role.getValue()));
+        String query = "SELECT * FROM users WHERE id IN (SELECT user_id FROM users_roles WHERE role_id = ?)";
+        return new HashSet<>(jdbcTemplate.query(query, userMapper, role));
     }
 
     @Override
@@ -65,13 +65,12 @@ public class UserJdbcTemplate implements UserDao {
         if (Objects.isNull(user)) throw new IllegalArgumentException("User is Null!");
 
         String query = "INSERT INTO users " +
-                "(role,telegram_id,username,phone_number,full_name,secret_key) " +
-                "VALUES(?,?,?,?,?,?) RETURNING id";
+                "(telegram_id,username,phone_number,full_name,secret_key) " +
+                "VALUES(?,?,?,?,?) RETURNING id";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
-            ps.setString(index++, user.getRole().getValue());
             ps.setString(index++, user.getTelegramId());
             ps.setString(index++, user.getUsername());
             ps.setString(index++, user.getPhoneNumber());
@@ -82,8 +81,15 @@ public class UserJdbcTemplate implements UserDao {
 
         Long userId = Objects.requireNonNull(keyHolder.getKey()).longValue();
 
+        saveUserRole(userId, user.getRole().getId());
+
         return findById(userId)
                 .orElseThrow(() -> new RuntimeException("User doesn't exist"));
+    }
+
+    private void saveUserRole(Long userId, Long roleId) {
+        String query = "INSERT INTO users_roles (user_id, role_id) VALUES (?, ?)";
+        jdbcTemplate.update(query, userId, roleId);
     }
 
     @Override
@@ -100,7 +106,7 @@ public class UserJdbcTemplate implements UserDao {
             String query = "UPDATE users SET " +
                     "role=?,telegram_id=?,username=?,phone_number=?,full_name=?,secret_key=?" +
                     " WHERE id=?";
-            int rows = jdbcTemplate.update(query, user.getRole().getValue(), user.getTelegramId(),
+            int rows = jdbcTemplate.update(query, user.getRole(), user.getTelegramId(),
                     user.getUsername(), user.getPhoneNumber(), user.getFullName(), user.getSecretKey(), id);
             if (rows != 1) {
                 throw new RuntimeException("Invalid request in SQL: " + query);

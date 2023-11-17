@@ -15,7 +15,6 @@ import rassvet.team.hire.bot.service.interfaces.StaffBoardService;
 import rassvet.team.hire.bot.utils.InlineKeyboardMarkupFactory;
 import rassvet.team.hire.dao.interfaces.UserDao;
 import rassvet.team.hire.models.User;
-import rassvet.team.hire.models.enums.Role;
 
 import java.util.Objects;
 
@@ -56,10 +55,10 @@ public class StaffBoardManager implements BoardManager, CallbackQueryHandler {
     private void showCurrentStaff(Update update) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
-        Role role = userDao.findByTelegramId(telegramId)
+        ERole role = userDao.findByTelegramId(telegramId)
                 .orElseThrow(() -> new UserNotFoundException(update))
                 .getRole();
-        if (!Objects.equals(role, Role.CREATOR)) {
+        if (!Objects.equals(role, ERole.CREATOR)) {
             throw new UnknownCommandException(update);
         }
         userDao.findAll()
