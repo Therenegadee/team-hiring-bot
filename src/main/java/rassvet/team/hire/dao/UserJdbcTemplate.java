@@ -57,7 +57,7 @@ public class UserJdbcTemplate implements UserDao {
     @Override
     public Set<User> findAllByRole(Role role) {
         String query = "SELECT * FROM users WHERE id IN (SELECT user_id FROM users_roles WHERE role_id = ?)";
-        return new HashSet<>(jdbcTemplate.query(query, userMapper, role));
+        return new HashSet<>(jdbcTemplate.query(query, userMapper, role.getId()));
     }
 
     @Override
@@ -104,17 +104,29 @@ public class UserJdbcTemplate implements UserDao {
         if (Objects.isNull(user)) throw new IllegalArgumentException("User is Null!");
         if (Objects.nonNull(id) && findById(id).isPresent()) {
             String query = "UPDATE users SET " +
-                    "role=?,telegram_id=?,username=?,phone_number=?,full_name=?,secret_key=?" +
+                    "telegram_id=?,username=?,phone_number=?,full_name=?,secret_key=?" +
                     " WHERE id=?";
             int rows = jdbcTemplate.update(query, user.getRole(), user.getTelegramId(),
                     user.getUsername(), user.getPhoneNumber(), user.getFullName(), user.getSecretKey(), id);
             if (rows != 1) {
                 throw new RuntimeException("Invalid request in SQL: " + query);
             }
+            updateRoleByUser(user);
             return findById(id).get();
         } else {
             throw new NotFoundException(String.format("User with id %d wasn't found", id));
         }
+    }
+
+    private void updateRoleByUser(User user) {
+        Long id = user.getId();
+        Role role = user.getRole();
+
+        String deleteQuery = "DELETE * FROM users_roles WHERE user_id=?";
+        jdbcTemplate.update(deleteQuery, id);
+
+        String updateQuery = "INSERT INTO users_roles (user_id, role_id) VALUES(?,?)";
+        jdbcTemplate.update(updateQuery, id, role.getId());
     }
 
     @Override
