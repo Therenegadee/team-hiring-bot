@@ -31,12 +31,9 @@ public class ApplicationJdbcTemplate implements ApplicationDao {
     }
 
     @Override
-    public Optional<Application> findByTelegramId(Long telegramId) {
+    public Set<Application> findAllByTelegramId(Long telegramId) {
         String query = "SELECT * FROM application WHERE telegram_id=?";
-        return jdbcTemplate
-                .query(query, applicationMapper, telegramId)
-                .stream()
-                .findAny();
+        return new HashSet<>(jdbcTemplate.query(query, applicationMapper, telegramId));
     }
 
     @Override

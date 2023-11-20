@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.service.interfaces.ApplicationService;
 import rassvet.team.hire.bot.service.interfaces.BotService;
-import rassvet.team.hire.bot.utils.ReplyMarkupKeyboardFactory;
+import rassvet.team.hire.bot.keyboards.ReplyMarkupKeyboardFactory;
 import rassvet.team.hire.bot.utils.PhoneNumberFormatter;
 import rassvet.team.hire.bot.utils.Validator;
 import rassvet.team.hire.dao.interfaces.VacancyDao;

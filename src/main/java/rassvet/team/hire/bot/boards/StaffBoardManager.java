@@ -9,11 +9,11 @@ import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.exceptions.UnknownCommandException;
 import rassvet.team.hire.bot.exceptions.UserNotFoundException;
 import rassvet.team.hire.bot.boards.interfaces.BoardManager;
+import rassvet.team.hire.bot.keyboards.StaffKeyboardMarkUp;
 import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.bot.handler.interfaces.CallbackQueryHandler;
-import rassvet.team.hire.bot.service.interfaces.StaffBoardService;
-import rassvet.team.hire.bot.utils.InlineKeyboardMarkupFactory;
 import rassvet.team.hire.dao.interfaces.UserDao;
+import rassvet.team.hire.models.Role;
 import rassvet.team.hire.models.User;
 
 import java.util.Objects;
@@ -48,17 +48,22 @@ public class StaffBoardManager implements BoardManager, CallbackQueryHandler {
         String chatId = update.getMessage().getChatId().toString();
         botService.sendResponse(SendMessage.builder()
                 .chatId(chatId)
-                .replyMarkup(InlineKeyboardMarkupFactory.staffBoardKeyboard())
+                .replyMarkup(StaffKeyboardMarkUp.staffBoardKeyboard())
                 .build());
+    }
+
+
+    public void showApplicantBoardPanel(Update update) {
+
     }
 
     private void showCurrentStaff(Update update) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
-        ERole role = userDao.findByTelegramId(telegramId)
+        Role role = userDao.findByTelegramId(telegramId)
                 .orElseThrow(() -> new UserNotFoundException(update))
                 .getRole();
-        if (!Objects.equals(role, ERole.CREATOR)) {
+        if (!Objects.equals(role, "Создатель")) {
             throw new UnknownCommandException(update);
         }
         userDao.findAll()
@@ -74,7 +79,7 @@ public class StaffBoardManager implements BoardManager, CallbackQueryHandler {
                         Telegram: %s
                         """,
                 user.getFullName(),
-                user.getRole().getValue(),
+                user.getRole().getRoleName(),
                 user.getPhoneNumber(),
                 user.getUsername()
         );
@@ -83,7 +88,7 @@ public class StaffBoardManager implements BoardManager, CallbackQueryHandler {
                         .chatId(chatId)
                         .disableNotification(true)
                         .text(userInfo)
-                        .replyMarkup(InlineKeyboardMarkupFactory.actionsTowardsStaffKeyboard(user))
+                        .replyMarkup(StaffKeyboardMarkUp.actionsTowardsStaffKeyboard(user))
                         .build()
         );
     }

@@ -18,5 +18,6 @@ public class Vacancy {
     private Long id;
     private PositionTag positionTag;
     private String positionName;
+    private String description;
     private List<String> questions;
 }

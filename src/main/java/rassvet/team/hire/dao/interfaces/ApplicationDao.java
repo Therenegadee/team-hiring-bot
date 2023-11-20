@@ -13,7 +13,7 @@ import java.util.Set;
 public interface ApplicationDao {
     Optional<Application> findById(Long id);
 
-    Optional<Application> findByTelegramId(Long telegramId);
+    Set<Application> findAllByTelegramId(Long telegramId);
 
     Set<Application> findAll();
 

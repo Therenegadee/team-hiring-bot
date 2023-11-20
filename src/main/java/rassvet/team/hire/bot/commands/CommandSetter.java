@@ -8,7 +8,6 @@ import rassvet.team.hire.bot.cache.enums.BotState;
 import rassvet.team.hire.bot.exceptions.UnknownCommandException;
 import rassvet.team.hire.bot.service.interfaces.ApplicationService;
 import rassvet.team.hire.bot.service.interfaces.BotService;
-import rassvet.team.hire.dao.interfaces.VacancyDao;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class CommandSetter {
                 return new ApplyCommand(applicationService);
             }
             case ADMIN_STATE -> {
-                return new AdminBoardCommand(botService);
+                return new StartingBoardCommand(botService);
             }
             default -> throw new UnknownCommandException(update);
         }

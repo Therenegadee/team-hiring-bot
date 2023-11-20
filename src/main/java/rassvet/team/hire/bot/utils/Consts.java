@@ -113,8 +113,10 @@ public class Consts {
     public static final String APPLICATIONS_BUTTON = "Заявления на работу";
     public static final String VACANCIES_BUTTON = "Вакансии";
     public static final String STAFF_BUTTON = "Сотрудники";
+    public static final String MY_APPLICATIONS_BUTTON = "Мои отклики";
 
     public static final String SHOW_ACTIVE_APPLICATIONS_BUTTON = "Посмотреть активные заявки";
+    public static final String SHOW_APPROVED_APPLICATIONS_BUTTON = "Посмотреть принятые заявки";
     public static final String SHOW_ALL_APPLICATIONS_BUTTON = "Посмотреть все заявки (актив/принято/отказ/архивные)";
     public static final String SHOW_REFUSED_APPLICATIONS_BUTTON = "Посмотреть заявки со статусом ОТКАЗАНО";
 
@@ -123,4 +125,9 @@ public class Consts {
     public static final String DELETE_STAFF_MEMBER_BUTTON = "Удалить сотрудника";
 
     public static final String SHOW_OPEN_VACANCIES_BUTTON = "Посмотреть открытые вакансии";
+    public static final String SHOW_VACANCY_BUTTON = "Посмотреть вакансию";
+    public static final String CREATE_VACANCY_BUTTON = "Создать новую вакансию";
+    public static final String APPLY_FOR_VACANCY_BUTTON = "Откликнуться на вакансию";
+    public static final String EDIT_VACANCY_BUTTON = "Редактировать вакансию";
+    public static final String DELETE_VACANCY_BUTTON = "Удалить вакансию";
 }

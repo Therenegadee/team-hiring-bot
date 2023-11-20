@@ -27,6 +27,7 @@ public class ApplicationRowMapper implements RowMapper<Application> {
         return Application.builder()
                 .id(applicationId)
                 .applicationStatus(ApplicationStatus.fromValue(rs.getString("application_status")))
+                .dateOfCreation(rs.getDate("date_of_creation"))
                 .telegramId(rs.getString("telegram_id"))
                 .fullName(rs.getString("full_name"))
                 .age(rs.getInt("age"))

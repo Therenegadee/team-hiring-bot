@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import rassvet.team.hire.models.enums.ApplicationStatus;
 import rassvet.team.hire.models.enums.ContactMethod;
 
+import java.sql.Date;
 import java.util.Map;
 
 @Getter
@@ -19,6 +20,7 @@ import java.util.Map;
 public class Application {
     @Id
     private Long id;
+    private Date dateOfCreation;
     private ApplicationStatus applicationStatus;
     private String telegramId;
     private String fullName;

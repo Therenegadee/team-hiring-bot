@@ -8,12 +8,14 @@ create TABLE IF NOT EXISTS position_tags (
 create TABLE IF NOT EXISTS vacancy (
     id                  BIGINT   PRIMARY KEY,
     position_name       VARCHAR,
+    description         VARCHAR,
     position_tag_id     BIGINT,
     FOREIGN KEY (position_tag_id) REFERENCES position_tags(id)
 );
 
 create TABLE IF NOT EXISTS application (
     id                  VARCHAR  PRIMARY KEY,
+    date_of_creation    DATE,
     application_status  VARCHAR,
     telegram_id         VARCHAR,
     full_name           VARCHAR,

@@ -1,4 +1,4 @@
-package rassvet.team.hire.bot.utils;
+package rassvet.team.hire.bot.keyboards;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,15 +19,6 @@ import java.util.Set;
 @Component
 @AllArgsConstructor
 public class ReplyMarkupKeyboardFactory {
-    private static VacancyDao vacancyDao;
-    private static UserDao userDao;
-
-    public static ReplyKeyboard positionKeyboard(){
-        KeyboardRow row = new KeyboardRow();
-        Set<Vacancy> vacancies = vacancyDao.findAll();
-        vacancies.forEach(vacancy -> row.add(vacancy.getPositionName()));
-        return new ReplyKeyboardMarkup(List.of(row));
-    }
 
     public static ReplyKeyboard contactOptions(){
         KeyboardRow row = new KeyboardRow();

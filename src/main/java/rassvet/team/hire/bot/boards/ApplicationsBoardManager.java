@@ -6,13 +6,14 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.boards.interfaces.BoardManager;
+import rassvet.team.hire.bot.keyboards.ApplicationsKeyboardMarkUp;
 import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.bot.handler.interfaces.CallbackQueryHandler;
-import rassvet.team.hire.bot.utils.InlineKeyboardMarkupFactory;
 import rassvet.team.hire.dao.interfaces.ApplicationDao;
 import rassvet.team.hire.models.Application;
 import rassvet.team.hire.models.enums.ApplicationStatus;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +31,7 @@ public class ApplicationsBoardManager implements BoardManager, CallbackQueryHand
         String secondPrefixOfCallbackData = callbackDataArr[1];
         switch (secondPrefixOfCallbackData) {
             case "BOARD" -> showBoardPanel(update);
+            case "APPLICANT" -> showApplicantApplications(update);
             case "EDIT" -> {
                 String thirdPrefixOfCallbackData = callbackDataArr[2];
                 Long applicationId = Long.parseLong(thirdPrefixOfCallbackData);
@@ -61,10 +63,18 @@ public class ApplicationsBoardManager implements BoardManager, CallbackQueryHand
         String chatId = update.getMessage().getChatId().toString();
         botService.sendResponse(SendMessage.builder()
                 .chatId(chatId)
-                .replyMarkup(InlineKeyboardMarkupFactory.applicationsBoardKeyboard())
+                .replyMarkup(ApplicationsKeyboardMarkUp.applicationsBoardKeyboard())
                 .build());
     }
 
+    public void showApplicantApplications(Update update) {
+        Long telegramId = update.getMessage().getFrom().getId();
+        Set<Application> applications = applicationDao.findAllByTelegramId(telegramId);
+        LocalDate currDate = LocalDate.now();
+        applications.stream()
+                .filter(application -> currDate.minusDays(30).isBefore(application.getDateOfCreation().toLocalDate()))
+                .forEach(application -> sendApplicationWholeInfo(update, application));
+    }
 
     private void showApplication(Update update, ApplicationStatus applicationStatus) {
         Set<Application> applications = applicationDao.findAllByStatus(applicationStatus);
@@ -133,7 +143,7 @@ public class ApplicationsBoardManager implements BoardManager, CallbackQueryHand
                         application.getExperience(),
                         answersToQuestions
                 ))
-                .replyMarkup(InlineKeyboardMarkupFactory.briefInfoOnApplicationKeyboard(application.getId()))
+                .replyMarkup(ApplicationsKeyboardMarkUp.briefInfoOnApplicationKeyboard(application.getId()))
                 .build());
     }
 
@@ -158,7 +168,7 @@ public class ApplicationsBoardManager implements BoardManager, CallbackQueryHand
                             application.getAge(),
                             application.getExperience()
                     ))
-                    .replyMarkup(InlineKeyboardMarkupFactory.briefInfoOnApplicationKeyboard(application.getId()))
+                    .replyMarkup(ApplicationsKeyboardMarkUp.briefInfoOnApplicationKeyboard(application.getId()))
                     .build()
             );
         }
