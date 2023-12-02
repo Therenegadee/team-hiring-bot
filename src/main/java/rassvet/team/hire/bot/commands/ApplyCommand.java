@@ -14,7 +14,6 @@ public class ApplyCommand implements Command {
     @Override
     public void handleCommand(Update update, BotState botState) {
         switch (botState) {
-            case APPLICANT_STATE, CHOOSE_POSITION_STATE -> choosePosition(update);
             case INPUT_FULL_NAME_STATE -> inputName(update);
             case INPUT_AGE_STATE -> inputAge(update);
             case INPUT_PHONE_NUMBER_STATE -> inputPhoneNumber(update);
@@ -26,22 +25,12 @@ public class ApplyCommand implements Command {
     @Override
     public void handleTextInput(Update update, BotState botState) {
         switch (botState) {
-            case CHOOSE_POSITION_STATE -> savePosition(update);
             case INPUT_FULL_NAME_STATE -> saveName(update);
             case INPUT_AGE_STATE -> saveAge(update);
             case INPUT_PHONE_NUMBER_STATE -> savePhoneNumber(update);
             case CHOOSE_CONTACT_METHOD_STATE -> saveContactMethod(update);
             case INPUT_EXPERIENCE_STATE -> saveExperience(update);
         }
-    }
-
-
-    private void choosePosition(Update update) {
-        applicationService.choosePosition(update);
-    }
-
-    private void savePosition(Update update) {
-        applicationService.savePosition(update);
     }
 
     private void inputName(Update update) {

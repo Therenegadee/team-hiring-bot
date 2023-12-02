@@ -16,7 +16,6 @@ import rassvet.team.hire.models.User;
 public class StartingBoardCommand implements Command {
     private final BotService botService;
     private final BotCache botCache;
-    private final RoleDao roleDao;
 
     @Override
     public void handleCommand(Update update, BotState botState) {

@@ -9,7 +9,6 @@ public interface BotCommands {
             new BotCommand("/start", "Запуск бота"),
             new BotCommand("/help", "Список доступных команд"),
             new BotCommand("/info", "Информация о боте"),
-            new BotCommand("/vacancies", "Активные вакансии"),
-            new BotCommand("/apply", "Подать заявку на вакансию")
+            new BotCommand("/vacancies", "Активные вакансии")
     );
 }

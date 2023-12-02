@@ -27,44 +27,6 @@ import static rassvet.team.hire.bot.utils.Consts.*;
 public class ApplicationServiceImpl implements ApplicationService {
     private final BotCache botCache;
     private final BotService botService;
-    private final VacancyDao vacancyDao;
-
-    @Override
-    public void choosePosition(Update update) {
-        Long telegramId = update.getMessage().getFrom().getId();
-        String chatId = update.getMessage().getChatId().toString();
-        botCache.setBotState(telegramId, CHOOSE_POSITION_STATE);
-        botService.sendResponse(SendMessage.builder()
-                .chatId(chatId)
-                .text(CHOOSE_DESIRED_POSITION)
-                .replyMarkup(ReplyMarkupKeyboardFactory.positionKeyboard())
-                .build());
-    }
-
-    @Override
-    public void savePosition(Update update) {
-        Long telegramId = update.getMessage().getFrom().getId();
-        String chatId = update.getMessage().getChatId().toString();
-        String userResponse = update.getMessage().getText();
-        Application application = new Application();
-        Optional<Vacancy> questionnaireOpt = vacancyDao.findByPositionName(userResponse);
-        if (questionnaireOpt.isEmpty()) {
-            botService.sendResponse(SendMessage.builder()
-                    .text(INCORRECT_INPUT_FOR_KEYBOARDS)
-                    .chatId(chatId)
-                    .replyMarkup(ReplyMarkupKeyboardFactory.positionKeyboard())
-                    .build());
-        }
-        Vacancy vacancy = questionnaireOpt.get();
-        application.setVacancy(vacancy);
-        botCache.setApplicationEntity(telegramId, application);
-        botCache.setBotState(telegramId, INPUT_FULL_NAME_STATE);
-        botService.sendResponse(SendMessage.builder()
-                .text("Вы претендуете на позицию: " + vacancy.getPositionName())
-                .chatId(chatId)
-                .build());
-        inputName(update);
-    }
 
     @Override
     public void inputName(Update update) {
@@ -127,7 +89,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     .build());
             return;
         }
-        int age = Integer.parseInt(userResponse);
+        Integer age = Integer.parseInt(userResponse);
         Application application = botCache.getApplicationEntity(telegramId);
         if (Objects.isNull(application.getAge())) {
             botCache.setBotState(telegramId, INPUT_PHONE_NUMBER_STATE);

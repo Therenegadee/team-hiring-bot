@@ -10,13 +10,9 @@ import rassvet.team.hire.bot.boards.interfaces.BoardManager;
 import rassvet.team.hire.bot.keyboards.VacanciesKeyboardMarkUp;
 import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.bot.handler.interfaces.CallbackQueryHandler;
-import rassvet.team.hire.dao.interfaces.UserDao;
-import rassvet.team.hire.dao.interfaces.VacancyDao;
+import rassvet.team.hire.bot.service.interfaces.VacancyService;
 import rassvet.team.hire.models.Role;
 import rassvet.team.hire.models.User;
-import rassvet.team.hire.models.Vacancy;
-
-import java.util.Set;
 
 
 @Component
@@ -27,26 +23,34 @@ public class VacancyBoardManager implements BoardManager, CallbackQueryHandler {
     @Autowired
     private BotService botService;
     @Autowired
-    private VacancyDao vacancyDao;
-    @Autowired
-    private UserDao userDao;
+    private VacancyService vacancyService;
 
     @Override
     public void handleCallbackQuery(Update update, String callbackData) {
         String[] callbackDataArr = callbackData.split(" ");
         String secondPrefixOfCallbackData = callbackDataArr[1];
         String thirdPrefixOfCallbackData = callbackDataArr[2];
+        String fourthPrefixOfCallbackData = callbackDataArr[3];
         switch (secondPrefixOfCallbackData) {
             case "BOARD" -> showBoardPanel(update);
+            case "CREATE" -> createVacancy(update);
             case "SHOW" -> {
                 switch (thirdPrefixOfCallbackData) {
                     case "ALL" -> showVacancies(update);
-                    case "ID" -> showVacancy(update, Long.parseLong(callbackDataArr[3]));
+                    case "ID" -> showVacancy(update, Long.parseLong(thirdPrefixOfCallbackData));
                 }
             }
-            case "APPLY" -> ;
-            case "EDIT" -> ;
-            case "DELETE" -> ;
+            case "APPLY" -> applyForVacancy(update, Long.parseLong(thirdPrefixOfCallbackData));
+            case "EDIT" -> {
+                switch (thirdPrefixOfCallbackData) {
+                    case "ID" -> editVacancy(update, Long.parseLong(fourthPrefixOfCallbackData));
+                    case "POSITION" -> editPosition(update, Long.parseLong(fourthPrefixOfCallbackData));
+                    case "DESCRIPTION" -> editDescription(update, Long.parseLong(fourthPrefixOfCallbackData));
+                    case "QUESTIONNAIRE" -> editQuestionnaire(update, Long.parseLong(fourthPrefixOfCallbackData));
+                }
+            }
+            case "DELETE" -> deleteVacancy(update, Long.parseLong(thirdPrefixOfCallbackData));
+            case "RESTORE" -> restoreVacancy(update);
         }
     }
 
@@ -64,54 +68,43 @@ public class VacancyBoardManager implements BoardManager, CallbackQueryHandler {
 
 
     private void showVacancies(Update update) {
-        Set<Vacancy> vacancies = vacancyDao.findAll();
-        sendVacancyBriefInfo(update, vacancies);
-    }
-
-    private void sendVacancyBriefInfo(Update update, Set<Vacancy> vacancies) {
-        String chatId = update.getMessage().getChatId().toString();
-        String vacancyInfo = "Вакансия: %s";
-        for (Vacancy vacancy : vacancies) {
-            botService.sendResponse(SendMessage.builder()
-                    .chatId(chatId)
-                    .text(String.format(
-                            vacancyInfo,
-                            vacancy.getPositionName()
-
-                    ))
-                    .replyMarkup(VacanciesKeyboardMarkUp.showVacancyKeyboard(vacancy.getId()))
-                    .build()
-            );
-        }
+        vacancyService.showVacancies(update);
     }
 
     private void showVacancy(Update update, Long vacancyId) {
-        //todo: добавить обработку исключения
-        Vacancy vacancy = vacancyDao.findById(vacancyId)
-                .orElseThrow(RuntimeException::new);
-        sendVacancyWholeInfo(update, vacancy);
+        vacancyService.showVacancy(update, vacancyId);
     }
 
-    private void sendVacancyWholeInfo(Update update, Vacancy vacancy) {
-        String chatId = update.getMessage().getChatId().toString();
-        Long telegramId = update.getMessage().getFrom().getId();
-        User user = botCache.getUserCache(telegramId);
-        Role role = user.getRole();
+    private void applyForVacancy(Update update, Long vacancyId) {
+        vacancyService.applyForVacancy(update, vacancyId);
+    }
 
-        String vacancyInfo = """
-                Должность: %s
-                Описание вакансии:
-                %s
-                """;
-        botService.sendResponse(SendMessage.builder()
-                .chatId(chatId)
-                .text(String.format(
-                        vacancyInfo,
-                        vacancy.getPositionName(),
-                        vacancy.getDescription()
-                ))
-                .replyMarkup(VacanciesKeyboardMarkUp.actionsTowardVacancyKeyboard(vacancy.getId(), role))
-                .build());
+    private void createVacancy(Update update) {
+        vacancyService.createVacancy(update);
+    }
+
+    private void editVacancy(Update update, Long vacancyId) {
+        vacancyService.editVacancy(update, vacancyId);
+    }
+
+    private void editDescription(Update update, Long vacancyId) {
+        vacancyService.editDescription(update, vacancyId);
+    }
+
+    private void editPosition(Update update, Long vacancyId) {
+        vacancyService.editPosition(update, vacancyId);
+    }
+
+    private void editQuestionnaire(Update update, Long vacancyId) {
+        vacancyService.editQuestionnaire(update, vacancyId);
+    }
+
+    private void deleteVacancy(Update update, Long vacancyId) {
+        vacancyService.deleteVacancy(update, vacancyId);
+    }
+
+    private void restoreVacancy(Update update) {
+        vacancyService.restoreVacancy(update);
     }
 
 }

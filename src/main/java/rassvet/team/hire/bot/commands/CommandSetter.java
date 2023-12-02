@@ -23,12 +23,12 @@ public class CommandSetter {
         BotState botState = botCache.getBotState(update.getMessage().getFrom().getId());
         switch (botState) {
             case INPUT_AGE_STATE, INPUT_EXPERIENCE_STATE, INPUT_FULL_NAME_STATE,
-                    INPUT_PHONE_NUMBER_STATE, CHOOSE_POSITION_STATE,
+                    INPUT_PHONE_NUMBER_STATE,
                     CHOOSE_CONTACT_METHOD_STATE,  ANSWERING_EXTRA_QUESTIONS_STATE -> {
                 return new ApplyCommand(applicationService);
             }
             case ADMIN_STATE -> {
-                return new StartingBoardCommand(botService);
+                return new StartingBoardCommand(botService, botCache);
             }
             default -> throw new UnknownCommandException(update);
         }
@@ -38,8 +38,6 @@ public class CommandSetter {
         String requestMessage = update.getMessage().getText();
         Long telegramId = update.getMessage().getFrom().getId();
         BotState botState = switch (requestMessage) {
-            case "/admin" -> BotState.ADMIN_STATE;
-            case "/apply" -> BotState.CHOOSE_POSITION_STATE;
             case "/auth" -> BotState.INPUT_SECRET_STAFF_CODE_STATE;
             default -> botCache.getBotState(telegramId);
         };

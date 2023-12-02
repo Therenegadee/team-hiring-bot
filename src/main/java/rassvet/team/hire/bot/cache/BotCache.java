@@ -8,6 +8,7 @@ import rassvet.team.hire.dao.interfaces.RoleDao;
 import rassvet.team.hire.models.Application;
 import rassvet.team.hire.models.Role;
 import rassvet.team.hire.models.User;
+import rassvet.team.hire.models.Vacancy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,7 @@ public class BotCache {
     private final Map<Long, Application> applicationEntityCache = new HashMap<>();
     private final Map<Long, StaffAuthenticationState> staffAuthStateCache = new HashMap<>();
     private final Map<Long, User> userCache = new HashMap<>();
+    private final Map<Long, Vacancy> vacancyEntityCache = new HashMap<>();
     private final RoleDao roleDao;
 
 
@@ -65,5 +67,13 @@ public class BotCache {
 
     public Application getApplicationEntity(Long telegramId) {
         return applicationEntityCache.get(telegramId);
+    }
+
+    public Vacancy getVacancyEntity(Long telegramId) {
+        return vacancyEntityCache.get(telegramId);
+    }
+
+    public void setVacancyEntity(Long telegramId, Vacancy vacancy) {
+        vacancyEntityCache.put(telegramId, vacancy);
     }
 }
