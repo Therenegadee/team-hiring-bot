@@ -60,4 +60,10 @@ public class ExceptionsHandler {
         //TODO: написать логику
         botCache.setBotState(update.getMessage().getFrom().getId(), BotState.APPLICANT_STATE);
     }
+
+    public void handleMisunderstandableInputException(MisunderstandableInputException ex) {
+        Update update = ex.getUpdate();
+        //TODO: написать логику
+        botCache.setBotState(update.getMessage().getFrom().getId(), BotState.APPLICANT_STATE);
+    }
 }

@@ -6,5 +6,4 @@ import rassvet.team.hire.bot.cache.enums.BotState;
 
 public interface BotService {
     void sendResponse(SendMessage responseMsg);
-    int processBasicCases(Update update, BotState botState);
 }

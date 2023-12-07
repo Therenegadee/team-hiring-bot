@@ -1,37 +1,43 @@
-package rassvet.team.hire.bot.commands;
+package rassvet.team.hire.bot.handler;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.enums.BotState;
+import rassvet.team.hire.bot.handler.interfaces.EventHandler;
 import rassvet.team.hire.bot.service.interfaces.ApplicationService;
 
 @Service
 @RequiredArgsConstructor
-public class ApplyCommand implements Command {
+public class ApplyingEventsHandler implements EventHandler {
     private final ApplicationService applicationService;
 
     @Override
-    public void handleCommand(Update update, BotState botState) {
-        switch (botState) {
-            case INPUT_FULL_NAME_STATE -> inputName(update);
-            case INPUT_AGE_STATE -> inputAge(update);
-            case INPUT_PHONE_NUMBER_STATE -> inputPhoneNumber(update);
-            case CHOOSE_CONTACT_METHOD_STATE -> inputContactMethod(update);
-            case INPUT_EXPERIENCE_STATE -> inputExperience(update);
-        }
+    public void handleEvent(Update update) {
+
     }
 
-    @Override
-    public void handleTextInput(Update update, BotState botState) {
-        switch (botState) {
-            case INPUT_FULL_NAME_STATE -> saveName(update);
-            case INPUT_AGE_STATE -> saveAge(update);
-            case INPUT_PHONE_NUMBER_STATE -> savePhoneNumber(update);
-            case CHOOSE_CONTACT_METHOD_STATE -> saveContactMethod(update);
-            case INPUT_EXPERIENCE_STATE -> saveExperience(update);
-        }
-    }
+//    @Override
+//    public void handleCommand(Update update, BotState botState) {
+//        switch (botState) {
+//            case INPUT_FULL_NAME_STATE -> inputName(update);
+//            case INPUT_AGE_STATE -> inputAge(update);
+//            case INPUT_PHONE_NUMBER_STATE -> inputPhoneNumber(update);
+//            case CHOOSE_CONTACT_METHOD_STATE -> inputContactMethod(update);
+//            case INPUT_EXPERIENCE_STATE -> inputExperience(update);
+//        }
+//    }
+//
+//    @Override
+//    public void handleTextInput(Update update, BotState botState) {
+//        switch (botState) {
+//            case INPUT_FULL_NAME_STATE -> saveName(update);
+//            case INPUT_AGE_STATE -> saveAge(update);
+//            case INPUT_PHONE_NUMBER_STATE -> savePhoneNumber(update);
+//            case CHOOSE_CONTACT_METHOD_STATE -> saveContactMethod(update);
+//            case INPUT_EXPERIENCE_STATE -> saveExperience(update);
+//        }
+//    }
 
     private void inputName(Update update) {
         applicationService.inputName(update);
@@ -72,5 +78,4 @@ public class ApplyCommand implements Command {
     private void saveExperience(Update update) {
         applicationService.saveExperience(update);
     }
-
 }

@@ -1,7 +1,6 @@
 package rassvet.team.hire.bot.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -12,7 +11,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import rassvet.team.hire.bot.RassvetBot;
 import rassvet.team.hire.bot.handler.UpdateHandler;
 
-import static rassvet.team.hire.bot.commands.BotCommands.LIST_OF_COMMAND;
+import static rassvet.team.hire.bot.helper.BotCommands.LIST_OF_COMMAND;
 
 @Configuration
 public class BotConfig {

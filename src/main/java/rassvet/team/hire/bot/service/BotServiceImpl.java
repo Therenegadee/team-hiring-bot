@@ -9,6 +9,7 @@ import rassvet.team.hire.bot.RassvetBot;
 import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.cache.enums.BotState;
 import rassvet.team.hire.bot.exceptions.BadTextRequestException;
+import rassvet.team.hire.bot.keyboards.StaffKeyboardMarkUp;
 import rassvet.team.hire.bot.keyboards.UserBoardKeyboardMarkUp;
 import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.dao.interfaces.RoleDao;
@@ -22,9 +23,6 @@ import static rassvet.team.hire.bot.utils.Consts.*;
 @RequiredArgsConstructor
 public class BotServiceImpl implements BotService {
     private final RassvetBot rassvetBot;
-    private final UserDao userDao;
-    private final BotCache botCache;
-    private final RoleDao roleDao;
 
     @Override
     public void sendResponse(SendMessage responseMsg) {
@@ -35,93 +33,4 @@ public class BotServiceImpl implements BotService {
         }
     }
 
-    @Override
-    public int processBasicCases(Update update, BotState botState) {
-        String messageRequest = update.getMessage().getText();
-        Long telegramId = update.getMessage().getFrom().getId();
-        if (!messageRequest.startsWith("/")) {
-            throw new BadTextRequestException(update);
-        }
-        //TODO: добавить обработку исключения
-        User user = userDao.findByTelegramId(telegramId).orElseThrow();
-        Role role = user.getRole();
-        if (!role.equals("Кандидат")) {
-            return processStaffBasicCases(update);
-        } else {
-            return processApplicantBasicCases(messageRequest, update);
-        }
-    }
-
-    private int processApplicantBasicCases(String messageRequest, Update update) {
-        switch (messageRequest) {
-            case "/start" -> {
-                Long telegramId = update.getMessage().getFrom().getId();
-                User user;
-                if(userDao.existsByTelegramId(telegramId)){
-                    //todo: добавить обработку исключения
-                    user = userDao.findByTelegramId(telegramId).orElseThrow(RuntimeException::new);
-                } else {
-                    user = new User();
-                    //todo: добавить обработку исключения
-                    Role role = roleDao.findByRoleName("Кандидат").orElseThrow(RuntimeException::new);
-                    user.setRole(role);
-                    user.setTelegramId(telegramId.toString());
-                    user.setUsername(update.getMessage().getFrom().getUserName());
-                    userDao.save(user);
-                }
-                botCache.setUserCache(telegramId, user);
-                sendResponse(SendMessage.builder()
-                        .chatId(update.getMessage().getChatId())
-                        .text(HELLO_WINDOW)
-                        .replyMarkup(UserBoardKeyboardMarkUp.applicantBoardKeyboard(update, telegramId))
-                        .build());
-                return 1;
-            }
-            case "/info" -> {
-                sendResponse(SendMessage.builder()
-                        .chatId(update.getMessage().getChatId())
-                        .text(INFO_WINDOW)
-                        .build());
-                return 1;
-            }
-            case "/help" -> {
-                sendResponse(SendMessage.builder()
-                        .chatId(update.getMessage().getChatId())
-                        .text(HELP_WINDOW)
-                        .build());
-                return 1;
-            }
-            default -> {
-                return 0;
-            }
-        }
-    }
-
-    private int processStaffBasicCases(Update update) {
-        String messageRequest = update.getMessage().getText();
-        return switch (messageRequest) {
-            case "/start" -> {
-                sendResponse(SendMessage.builder()
-                        .chatId(update.getMessage().getChatId())
-                        .text(HELLO_WINDOW_FOR_STAFF)
-                        .build());
-                yield 1;
-            }
-            case "/info" -> {
-                sendResponse(SendMessage.builder()
-                        .chatId(update.getMessage().getChatId())
-                        .text(INFO_WINDOW_FOR_STAFF)
-                        .build());
-                yield 1;
-            }
-            case "/help" -> {
-                sendResponse(SendMessage.builder()
-                        .chatId(update.getMessage().getChatId())
-                        .text(HELP_WINDOW_FOR_STAFF)
-                        .build());
-                yield 1;
-            }
-            default -> 0;
-        };
-    }
 }

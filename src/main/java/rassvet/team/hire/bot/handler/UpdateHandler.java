@@ -5,34 +5,36 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.cache.enums.BotState;
-import rassvet.team.hire.bot.commands.Command;
-import rassvet.team.hire.bot.commands.CommandSetter;
+import rassvet.team.hire.bot.exceptions.MisunderstandableInputException;
+import rassvet.team.hire.bot.handler.interfaces.CommandHandler;
+import rassvet.team.hire.bot.handler.interfaces.EventHandler;
 import rassvet.team.hire.bot.service.BotServiceImpl;
+import rassvet.team.hire.bot.service.interfaces.BotService;
 
 @Service
 @RequiredArgsConstructor
 public class UpdateHandler {
-    private final CommandSetter commandSetter;
     private final BotCache botCache;
     private final BotServiceImpl botService;
     private final CallbackQueryHandlerImpl callbackQueryHandler;
+    private final EventHandlerSetter eventHandlerSetter;
+    private final CommandHandler commandHandler;
 
     public void handleUpdate(Update update) {
         Long telegramId = update.getMessage().getFrom().getId();
         BotState botState = botCache.getBotState(telegramId);
-        if (botService.processBasicCases(update, botState) == 1) {
-            return;
-        }
-        if (update.hasCallbackQuery()) {
+        if (update.getMessage().getText().startsWith("/")) {
+            commandHandler.handleCommand(update);
+        } else if (update.hasCallbackQuery()) {
             String callbackData = update.getCallbackQuery().getData();
             callbackQueryHandler.handleCallbackQuery(update, callbackData);
-            return;
-        }
-        Command command = commandSetter.setCommand(update);
-        if (update.getMessage().getText().startsWith("/")) {
-            command.handleCommand(update, botState);
+        } else if ((botState.equals(BotState.ADMIN_STATE) || botState.equals(BotState.APPLICANT_STATE)) &&
+                        !update.getMessage().getText().startsWith("/")
+        ) {
+            throw new MisunderstandableInputException(update);
         } else {
-            command.handleTextInput(update, botState);
+            EventHandler eventHandler = eventHandlerSetter.setEventHandler(update);
+            eventHandler.handleEvent(update);
         }
     }
 }
