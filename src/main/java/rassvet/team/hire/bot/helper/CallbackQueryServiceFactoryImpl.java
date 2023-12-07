@@ -6,7 +6,7 @@ import rassvet.team.hire.bot.helper.interfaces.CallbackQueryServiceFactory;
 import rassvet.team.hire.bot.boards.ApplicationsBoardManager;
 import rassvet.team.hire.bot.boards.StaffBoardManager;
 import rassvet.team.hire.bot.boards.VacancyBoardManager;
-import rassvet.team.hire.bot.handler.interfaces.CallbackQueryHandler;
+import rassvet.team.hire.bot.handler.callbackQuery.CallbackQueryHandler;
 
 @Service
 @RequiredArgsConstructor

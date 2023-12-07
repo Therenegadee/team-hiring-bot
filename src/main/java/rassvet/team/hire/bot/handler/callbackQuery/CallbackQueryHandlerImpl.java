@@ -1,10 +1,9 @@
-package rassvet.team.hire.bot.handler;
+package rassvet.team.hire.bot.handler.callbackQuery;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.exceptions.InternalException;
-import rassvet.team.hire.bot.handler.interfaces.CallbackQueryHandler;
 import rassvet.team.hire.bot.helper.interfaces.CallbackQueryServiceFactory;
 
 @Service

@@ -11,7 +11,7 @@ import rassvet.team.hire.bot.exceptions.UserNotFoundException;
 import rassvet.team.hire.bot.boards.interfaces.BoardManager;
 import rassvet.team.hire.bot.keyboards.StaffKeyboardMarkUp;
 import rassvet.team.hire.bot.service.interfaces.BotService;
-import rassvet.team.hire.bot.handler.interfaces.CallbackQueryHandler;
+import rassvet.team.hire.bot.handler.callbackQuery.CallbackQueryHandler;
 import rassvet.team.hire.dao.interfaces.UserDao;
 import rassvet.team.hire.models.Role;
 import rassvet.team.hire.models.User;

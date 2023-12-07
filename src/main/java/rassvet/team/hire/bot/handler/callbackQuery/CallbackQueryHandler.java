@@ -1,4 +1,4 @@
-package rassvet.team.hire.bot.handler.interfaces;
+package rassvet.team.hire.bot.handler.callbackQuery;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 

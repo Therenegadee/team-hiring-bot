@@ -1,4 +1,4 @@
-package rassvet.team.hire.bot.helper;
+package rassvet.team.hire.bot.handler.commands;
 
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 

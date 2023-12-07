@@ -9,7 +9,7 @@ import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.boards.interfaces.BoardManager;
 import rassvet.team.hire.bot.keyboards.VacanciesKeyboardMarkUp;
 import rassvet.team.hire.bot.service.interfaces.BotService;
-import rassvet.team.hire.bot.handler.interfaces.CallbackQueryHandler;
+import rassvet.team.hire.bot.handler.callbackQuery.CallbackQueryHandler;
 import rassvet.team.hire.bot.service.interfaces.VacancyService;
 import rassvet.team.hire.models.Role;
 import rassvet.team.hire.models.User;

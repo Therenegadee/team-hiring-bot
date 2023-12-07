@@ -5,18 +5,16 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.BotCache;
+import rassvet.team.hire.bot.cache.enums.BotState;
 import rassvet.team.hire.bot.service.interfaces.ApplicationService;
 import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.bot.keyboards.ReplyMarkupKeyboardFactory;
 import rassvet.team.hire.bot.utils.PhoneNumberFormatter;
 import rassvet.team.hire.bot.utils.Validator;
-import rassvet.team.hire.dao.interfaces.VacancyDao;
 import rassvet.team.hire.models.Application;
-import rassvet.team.hire.models.Vacancy;
 import rassvet.team.hire.models.enums.ContactMethod;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import static rassvet.team.hire.bot.cache.enums.BotState.*;
 import static rassvet.team.hire.bot.cache.enums.BotState.EDITING_APPLICATION_STATE;
@@ -29,16 +27,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final BotService botService;
 
     @Override
-    public void inputName(Update update) {
+    public void processNameInput(Update update, BotState botState) {
         String chatId = update.getMessage().getChatId().toString();
-        botService.sendResponse(SendMessage.builder()
-                .chatId(chatId)
-                .text(INPUT_NAME)
-                .build());
+        Long telegramId = update.getMessage().getFrom().getId();
+        if (!botState.equals(SAVING_FULL_NAME_STATE)) {
+            botService.sendResponse(SendMessage.builder()
+                    .chatId(chatId)
+                    .text(INPUT_NAME)
+                    .build());
+            botCache.setBotState(telegramId, SAVING_FULL_NAME_STATE);
+        } else {
+            saveName(update, botState);
+        }
     }
 
-    @Override
-    public void saveName(Update update) {
+    public void saveName(Update update, BotState botState) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
         String userResponse = update.getMessage().getText();
@@ -47,16 +50,18 @@ public class ApplicationServiceImpl implements ApplicationService {
                     .chatId(chatId)
                     .text(INCORRECT_NAME_INPUT)
                     .build());
+            botCache.setBotState(telegramId, INPUT_FULL_NAME_STATE);
             return;
         }
         Application application = botCache.getApplicationEntity(telegramId);
         if (application.getFullName().isEmpty()) {
-            botCache.setBotState(telegramId, INPUT_AGE_STATE);
             botService.sendResponse(SendMessage.builder()
                     .text(userResponse + ", приятно познакомиться!")
                     .chatId(chatId)
                     .build());
-            inputAge(update);
+            botState = INPUT_AGE_STATE;
+            botCache.setBotState(telegramId, INPUT_AGE_STATE);
+            processAgeInput(update, botState);
         } else {
             botCache.setBotState(telegramId, EDITING_APPLICATION_STATE);
             botService.sendResponse(SendMessage.builder()
@@ -69,16 +74,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void inputAge(Update update) {
+    public void processAgeInput(Update update, BotState botState) {
         String chatId = update.getMessage().getChatId().toString();
-        botService.sendResponse(SendMessage.builder()
-                .chatId(chatId)
-                .text(INPUT_AGE)
-                .build());
+        if (!botState.equals(SAVING_AGE_STATE)) {
+            Long telegramId = update.getMessage().getFrom().getId();
+            botCache.setBotState(telegramId, SAVING_AGE_STATE);
+            botService.sendResponse(SendMessage.builder()
+                    .chatId(chatId)
+                    .text(INPUT_AGE)
+                    .build());
+        } else {
+            saveAge(update, botState);
+        }
     }
 
-    @Override
-    public void saveAge(Update update) {
+    public void saveAge(Update update, BotState botState) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
         String userResponse = update.getMessage().getText();
@@ -92,12 +102,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         Integer age = Integer.parseInt(userResponse);
         Application application = botCache.getApplicationEntity(telegramId);
         if (Objects.isNull(application.getAge())) {
-            botCache.setBotState(telegramId, INPUT_PHONE_NUMBER_STATE);
             botService.sendResponse(SendMessage.builder()
                     .text("Вы успешно ввели ваш возраст!")
                     .chatId(chatId)
                     .build());
-            inputPhoneNumber(update);
+            botState = INPUT_PHONE_NUMBER_STATE;
+            botCache.setBotState(telegramId, INPUT_PHONE_NUMBER_STATE);
+            processPhoneNumberInput(update, botState);
         } else {
             botCache.setBotState(telegramId, EDITING_APPLICATION_STATE);
             botService.sendResponse(SendMessage.builder()
@@ -110,16 +121,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void inputPhoneNumber(Update update) {
+    public void processPhoneNumberInput(Update update, BotState botState) {
         String chatId = update.getMessage().getChatId().toString();
-        botService.sendResponse(SendMessage.builder()
-                .chatId(chatId)
-                .text(INPUT_PHONE_NUMBER)
-                .build());
+        if (!botState.equals(SAVING_PHONE_NUMBER_STATE)) {
+            Long telegramId = update.getMessage().getFrom().getId();
+            botCache.setBotState(telegramId, SAVING_PHONE_NUMBER_STATE);
+            botService.sendResponse(SendMessage.builder()
+                    .chatId(chatId)
+                    .text(INPUT_PHONE_NUMBER)
+                    .build());
+        } else {
+            savePhoneNumber(update, botState);
+        }
     }
 
-    @Override
-    public void savePhoneNumber(Update update) {
+    public void savePhoneNumber(Update update, BotState botState) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
         String userResponse = update.getMessage().getText();
@@ -137,12 +153,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         String phoneNumber = PhoneNumberFormatter.formatPhoneNumber(userResponse);
         Application application = botCache.getApplicationEntity(telegramId);
         if (Objects.isNull(application.getPhoneNumber())) {
-            botCache.setBotState(telegramId, CHOOSE_CONTACT_METHOD_STATE);
             botService.sendResponse(SendMessage.builder()
                     .text("Вы успешно ввели ваш номер телефона! (" + phoneNumber + ")")
                     .chatId(chatId)
                     .build());
-            inputContactMethod(update);
+            botState = CHOOSE_CONTACT_METHOD_STATE;
+            botCache.setBotState(telegramId, CHOOSE_CONTACT_METHOD_STATE);
+            processContactMethodInput(update, botState);
         } else {
             botCache.setBotState(telegramId, EDITING_APPLICATION_STATE);
             botService.sendResponse(SendMessage.builder()
@@ -155,17 +172,23 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public void inputContactMethod(Update update) {
+    public void processContactMethodInput(Update update, BotState botState) {
         String chatId = update.getMessage().getChatId().toString();
-        botService.sendResponse(SendMessage.builder()
-                .chatId(chatId)
-                .text(INPUT_PHONE_NUMBER)
-                .replyMarkup(ReplyMarkupKeyboardFactory.contactOptions())
-                .build());
+        if (!botState.equals(SAVING_CONTACT_METHOD_STATE)) {
+            Long telegramId = update.getMessage().getFrom().getId();
+            botCache.setBotState(telegramId, SAVING_CONTACT_METHOD_STATE);
+            botService.sendResponse(SendMessage.builder()
+                    .chatId(chatId)
+                    .text(INPUT_PHONE_NUMBER)
+                    .replyMarkup(ReplyMarkupKeyboardFactory.contactOptions())
+                    .build());
+        } else {
+            saveContactMethod(update, botState);
+        }
+
     }
 
-    @Override
-    public void saveContactMethod(Update update) {
+    public void saveContactMethod(Update update, BotState botState) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
         String userResponse = update.getMessage().getText();
@@ -180,25 +203,31 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application application = botCache.getApplicationEntity(telegramId);
         application.setContactMethod(contactMethod);
         botCache.setApplicationEntity(telegramId, application);
-        botCache.setBotState(telegramId, INPUT_EXPERIENCE_STATE);
         botService.sendResponse(SendMessage.builder()
                 .text("Вы выбрали метод для связи: " + contactMethod.getValue())
                 .chatId(chatId)
                 .build());
-        inputExperience(update);
+        botState = INPUT_EXPERIENCE_STATE;
+        botCache.setBotState(telegramId, INPUT_EXPERIENCE_STATE);
+        processExperienceInput(update, botState);
     }
 
     @Override
-    public void inputExperience(Update update) {
+    public void processExperienceInput(Update update, BotState botState) {
         String chatId = update.getMessage().getChatId().toString();
-        botService.sendResponse(SendMessage.builder()
-                .chatId(chatId)
-                .text(INPUT_EXPERIENCE)
-                .build());
+        if (!botState.equals(SAVING_EXPERIENCE_STATE)) {
+            Long telegramId = update.getMessage().getFrom().getId();
+            botCache.setBotState(telegramId, SAVING_EXPERIENCE_STATE);
+            botService.sendResponse(SendMessage.builder()
+                    .chatId(chatId)
+                    .text(INPUT_EXPERIENCE)
+                    .build());
+        } else {
+            saveExperience(update, botState);
+        }
     }
 
-    @Override
-    public void saveExperience(Update update) {
+    public void saveExperience(Update update, BotState botState) {
         Long telegramId = update.getMessage().getFrom().getId();
         String chatId = update.getMessage().getChatId().toString();
         String userResponse = update.getMessage().getText();
@@ -208,7 +237,8 @@ public class ApplicationServiceImpl implements ApplicationService {
                     .text("Информация о вашем опыте работы успешно сохранена!")
                     .chatId(chatId)
                     .build());
-            if(!application.getVacancy().getQuestions().isEmpty()) {
+            if (!application.getVacancy().getQuestions().isEmpty()) {
+                botState = ANSWERING_EXTRA_QUESTIONS_STATE;
                 botCache.setBotState(telegramId, ANSWERING_EXTRA_QUESTIONS_STATE);
             } else {
                 botCache.setBotState(telegramId, FINISHED_QUESTIONNAIRE_STATE);

@@ -6,16 +6,15 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.cache.enums.BotState;
 import rassvet.team.hire.bot.exceptions.MisunderstandableInputException;
-import rassvet.team.hire.bot.handler.interfaces.CommandHandler;
-import rassvet.team.hire.bot.handler.interfaces.EventHandler;
-import rassvet.team.hire.bot.service.BotServiceImpl;
-import rassvet.team.hire.bot.service.interfaces.BotService;
+import rassvet.team.hire.bot.handler.callbackQuery.CallbackQueryHandlerImpl;
+import rassvet.team.hire.bot.handler.event.EventHandlerSetter;
+import rassvet.team.hire.bot.handler.commands.CommandHandler;
+import rassvet.team.hire.bot.handler.event.EventHandler;
 
 @Service
 @RequiredArgsConstructor
 public class UpdateHandler {
     private final BotCache botCache;
-    private final BotServiceImpl botService;
     private final CallbackQueryHandlerImpl callbackQueryHandler;
     private final EventHandlerSetter eventHandlerSetter;
     private final CommandHandler commandHandler;
@@ -34,7 +33,7 @@ public class UpdateHandler {
             throw new MisunderstandableInputException(update);
         } else {
             EventHandler eventHandler = eventHandlerSetter.setEventHandler(update);
-            eventHandler.handleEvent(update);
+            eventHandler.handleEvent(update, botState);
         }
     }
 }

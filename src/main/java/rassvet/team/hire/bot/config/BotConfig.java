@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import rassvet.team.hire.bot.RassvetBot;
 import rassvet.team.hire.bot.handler.UpdateHandler;
 
-import static rassvet.team.hire.bot.helper.BotCommands.LIST_OF_COMMAND;
+import static rassvet.team.hire.bot.handler.commands.BotCommands.LIST_OF_COMMAND;
 
 @Configuration
 public class BotConfig {

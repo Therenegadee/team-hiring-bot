@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.boards.interfaces.BoardManager;
 import rassvet.team.hire.bot.keyboards.ApplicationsKeyboardMarkUp;
 import rassvet.team.hire.bot.service.interfaces.BotService;
-import rassvet.team.hire.bot.handler.interfaces.CallbackQueryHandler;
+import rassvet.team.hire.bot.handler.callbackQuery.CallbackQueryHandler;
 import rassvet.team.hire.dao.interfaces.ApplicationDao;
 import rassvet.team.hire.models.Application;
 import rassvet.team.hire.models.enums.ApplicationStatus;

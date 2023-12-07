@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import rassvet.team.hire.bot.cache.enums.BotState;
 import rassvet.team.hire.bot.cache.enums.StaffAuthenticationState;
+import rassvet.team.hire.bot.handler.event.EventHandler;
 import rassvet.team.hire.dao.interfaces.RoleDao;
 import rassvet.team.hire.models.Application;
 import rassvet.team.hire.models.Role;
@@ -24,6 +25,7 @@ public class BotCache {
     private final Map<Long, StaffAuthenticationState> staffAuthStateCache = new HashMap<>();
     private final Map<Long, User> userCache = new HashMap<>();
     private final Map<Long, Vacancy> vacancyEntityCache = new HashMap<>();
+    private final Map<Long, EventHandler> eventHandlerCache = new HashMap<>();
     private final RoleDao roleDao;
 
 
@@ -75,5 +77,13 @@ public class BotCache {
 
     public void setVacancyEntity(Long telegramId, Vacancy vacancy) {
         vacancyEntityCache.put(telegramId, vacancy);
+    }
+
+    public EventHandler getEventHandlerCache(Long telegramId) {
+        return eventHandlerCache.get(telegramId);
+    }
+
+    public void setEventHandlerCache(Long telegramId, EventHandler eventHandler) {
+        eventHandlerCache.put(telegramId, eventHandler);
     }
 }

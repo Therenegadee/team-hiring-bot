@@ -16,6 +16,7 @@ import rassvet.team.hire.models.User;
 
 import java.util.Objects;
 
+import static rassvet.team.hire.bot.cache.enums.BotState.VERIFYING_SECRET_STAFF_CODE_STATE;
 import static rassvet.team.hire.bot.utils.Consts.HELLO_WINDOW_FOR_STAFF;
 import static rassvet.team.hire.bot.utils.Consts.INPUT_YOUR_SECRET_CODE;
 
@@ -27,16 +28,19 @@ public class AuthServiceImpl implements AuthService {
     private final UserDao userDao;
 
     @Override
-    public void inputSecretCode(Update update) {
+    public void processSecretCodeInput(Update update, BotState botState) {
         String chatId = update.getMessage().getChatId().toString();
-        botService.sendResponse(SendMessage.builder()
-                .chatId(chatId)
-                .text(INPUT_YOUR_SECRET_CODE)
-                .build());
+        if(!botState.equals(VERIFYING_SECRET_STAFF_CODE_STATE)) {
+            botService.sendResponse(SendMessage.builder()
+                    .chatId(chatId)
+                    .text(INPUT_YOUR_SECRET_CODE)
+                    .build());
+        } else {
+            verifySecretCode(update);
+        }
     }
 
-    @Override
-    public void verifySecretCode(Update update) {
+    private void verifySecretCode(Update update) {
         Long telegramId = update.getMessage().getFrom().getId();
         User user = userDao.findByTelegramId(telegramId).orElseThrow(() -> new UserNotFoundException(update));
         String secretCode = user.getSecretKey();

@@ -61,6 +61,7 @@ public class ExceptionsHandler {
         botCache.setBotState(update.getMessage().getFrom().getId(), BotState.APPLICANT_STATE);
     }
 
+    @ExceptionHandler(MisunderstandableInputException.class)
     public void handleMisunderstandableInputException(MisunderstandableInputException ex) {
         Update update = ex.getUpdate();
         //TODO: написать логику

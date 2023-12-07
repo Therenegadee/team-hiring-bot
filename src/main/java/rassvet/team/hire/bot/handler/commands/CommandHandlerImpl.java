@@ -1,4 +1,4 @@
-package rassvet.team.hire.bot.handler;
+package rassvet.team.hire.bot.handler.commands;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import rassvet.team.hire.bot.cache.BotCache;
 import rassvet.team.hire.bot.exceptions.BadTextRequestException;
 import rassvet.team.hire.bot.exceptions.UnknownCommandException;
-import rassvet.team.hire.bot.handler.interfaces.CommandHandler;
+import rassvet.team.hire.bot.handler.commands.CommandHandler;
 import rassvet.team.hire.bot.keyboards.UserBoardKeyboardMarkUp;
 import rassvet.team.hire.bot.service.interfaces.BotService;
 import rassvet.team.hire.dao.interfaces.RoleDao;
